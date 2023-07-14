@@ -1,4 +1,4 @@
-const db = require('../config/db');
+// const db = require('../config/db');
 const bcrypt = require("bcrypt");
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
@@ -59,5 +59,5 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
     }
 };
 
-const UserModel = db.model('user',userSchema);
+const UserModel = mongoose.model('user',userSchema);
 module.exports = UserModel;
