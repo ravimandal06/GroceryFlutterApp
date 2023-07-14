@@ -59,7 +59,7 @@ class NetworkHandler {
 
   static buildUrl(String endpoint) {
     // String host = "http://192.168.10.38:8000/we/";
-    String host = "http://localhost:3000/api";
+    String host = "http://192.168.29.60:3000/";
     final apiPath = host + endpoint;
     print(apiPath);
     return Uri.parse(apiPath);

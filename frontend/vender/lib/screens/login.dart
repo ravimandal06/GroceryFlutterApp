@@ -36,19 +36,22 @@ class _LoginScreenState extends State<LoginScreen> {
     prefs = await SharedPreferences.getInstance();
   }
 
-  void loginUser() async {
+  Future<bool> loginUser() async {
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       var regBody = {
         "email": emailController.text,
         "password": passwordController.text,
       };
-      var response = await http.post(Uri.parse(login),
+      var response = await http.post(
+          Uri.parse("http://192.168.29.60:3000/admin/login"),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(regBody));
 
       var jsonResponse = jsonDecode(response.body);
       if (jsonResponse['status']) {
         var myToken = jsonResponse['token'];
+        print("Login successfull");
+        print(myToken);
         prefs.setString('token', myToken);
         Navigator.pushReplacement(
           context,
@@ -58,15 +61,18 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         );
+        return true;
       } else {
         print("something went wrong");
         print(jsonResponse['message']);
+        return false;
       }
     } else {
       setState(() {
         isNotValidate_ = true;
       });
     }
+    return false;
   }
 
   Future<void> signIn(BuildContext context) async {
@@ -212,14 +218,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 600,
                             height: 45,
                             child: FilledButton.tonal(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   // Form is valid, process the data
                                   // For example, save it to a database
                                   print('Name: $_name');
                                   print('Email: $registration');
-                                  loginUser();
-                                  signIn(context);
+                                  await loginUser();
+                                  // signIn(context);
                                 }
                               },
                               child: const Text('Login'),

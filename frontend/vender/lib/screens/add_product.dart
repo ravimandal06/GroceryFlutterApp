@@ -44,7 +44,7 @@ class _AddProductState extends State<AddProduct> {
           stockController.text.isNotEmpty &&
           productPriceController.text.isNotEmpty) {
         var regBody = {
-          // 'userId': ,
+          'userId': "64b13fe5a6c641af69dad074",
           // 'productImage': '',
           'productType': categoriesController.text,
           'productName': productNameController.text,
@@ -54,10 +54,15 @@ class _AddProductState extends State<AddProduct> {
 
           'productOfferPrice': offerPriceController.text,
         };
-        var response = await http.post(Uri.parse(addProduct),
-            headers: {"Content-Type": "application/json"},
-            body: jsonEncode(regBody));
+        print(addProduct);
+        print(regBody);
 
+        var response = await http.post(
+          Uri.parse("http://192.168.29.60:3000/admin/addProduct"),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(regBody),
+        );
+        print(response);
         var jsonResponse = jsonDecode(response.body);
         print(jsonResponse['status']);
         if (jsonResponse['status']) {
@@ -72,7 +77,7 @@ class _AddProductState extends State<AddProduct> {
               context,
               MaterialPageRoute(
                   builder: (context) => const ShowProduct(
-                      // token: widget.token,
+                        // token: jsonResponse['token'],
                       )));
         }
       }
