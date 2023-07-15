@@ -25,7 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool isNotValidate_ = false;
 
-  void registerUser() async {
+  Future<bool> registerUser() async {
     print('registerUser');
     // final url = Uri.parse('http://192.168.1.70:41744/registration');
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
@@ -35,9 +35,12 @@ class _SignupScreenState extends State<SignupScreen> {
         "name": nameController.text,
         "phoneNumber": phoneNumberController.text,
       };
-
-      var response =
-          await http.post(Uri.parse(registration), body: jsonEncode(regBody));
+      var body = jsonEncode(regBody);
+      print(body);
+      var response = await http.post(
+          Uri.parse("http://192.168.1.67:3000/admin/register"),
+          headers: {"Content-Type": "application/json"},
+          body: body);
       print("hellloo");
       print(response.body);
       print(response.statusCode);
@@ -45,7 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
       var jsonResponse = jsonDecode(response.body);
       print(jsonResponse['status']);
 
-      if (jsonResponse['status'] == 200) {
+      if (jsonResponse['status']) {
         print("success");
         Navigator.push(
           context,
@@ -53,14 +56,17 @@ class _SignupScreenState extends State<SignupScreen> {
             builder: (context) => const LoginScreen(),
           ),
         );
+        return true;
       } else {
         print("something went wrong");
+        return false;
       }
     } else {
       setState(() {
         // isNotValidate_ = true;
       });
     }
+    return false;
   }
 
   // Future<void> signUp(BuildContext context) async {
@@ -296,13 +302,13 @@ class _SignupScreenState extends State<SignupScreen> {
                             width: 600,
                             height: 45,
                             child: FilledButton.tonal(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   // Form is valid, process the data
                                   // For example, save it to a database
                                   print('Name: $registration');
                                   // registerUser();
-                                  registerUser();
+                                  await registerUser();
                                   // signUp(context);
                                 }
                               },

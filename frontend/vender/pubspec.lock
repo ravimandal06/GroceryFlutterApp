@@ -219,6 +219,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_utils_project:
+    dependency: "direct main"
+    description:
+      name: flutter_utils_project
+      sha256: c2387fe989d7ea97b75d3733776855daabd95463e96753c5633d59465c49b820
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -304,6 +312,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.1"
+  get:
+    dependency: "direct main"
+    description:
+      name: get
+      sha256: "2ba20a47c8f1f233bed775ba2dd0d3ac97b4cf32fc17731b3dfc672b06b0e92a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.6.5"
+  get_storage:
+    dependency: "direct main"
+    description:
+      name: get_storage
+      sha256: "39db1fffe779d0c22b3a744376e86febe4ade43bf65e06eab5af707dc84185a2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   http:
     dependency: "direct main"
     description:
@@ -344,6 +368,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  linear_progress_bar:
+    dependency: "direct main"
+    description:
+      name: linear_progress_bar
+      sha256: "7db25e6c84b1d9e598127b9f8cedb3072978532d648f820288720122c5f566a8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   lints:
     dependency: transitive
     description:
@@ -384,6 +416,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
+  path_provider:
+    dependency: transitive
+    description:
+      name: path_provider
+      sha256: "3087813781ab814e4157b172f1a11c46be20179fcc9bea043e0fba36bc0acaa2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.15"
+  path_provider_android:
+    dependency: transitive
+    description:
+      name: path_provider_android
+      sha256: "2cec049d282c7f13c594b4a73976b0b4f2d7a1838a6dd5aaf7bd9719196bee86"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.27"
+  path_provider_foundation:
+    dependency: transitive
+    description:
+      name: path_provider_foundation
+      sha256: "916731ccbdce44d545414dd9961f26ba5fbaa74bcbb55237d8e65a623a8c7297"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.4"
   path_provider_linux:
     dependency: transitive
     description:
@@ -408,6 +464,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.7"
+  persistent_bottom_nav_bar:
+    dependency: "direct main"
+    description:
+      name: persistent_bottom_nav_bar
+      sha256: e2e031e3366fde01511e372a9a19d720a9b252bb456e5c8d77a30d7a4a2ddfb0
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.2"
   platform:
     dependency: transitive
     description:
