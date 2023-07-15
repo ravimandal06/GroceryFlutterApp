@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:vender/screens/show_product.dart';
 
 import '../config.dart';
+import '../homeNav.dart';
 
 class AddProduct extends StatefulWidget {
   const AddProduct({Key? key, this.token})
@@ -44,7 +44,7 @@ class _AddProductState extends State<AddProduct> {
           stockController.text.isNotEmpty &&
           productPriceController.text.isNotEmpty) {
         var regBody = {
-          // 'userId': ,
+          'userId': "64b13fe5a6c641af69dad074",
           // 'productImage': '',
           'productType': categoriesController.text,
           'productName': productNameController.text,
@@ -54,10 +54,15 @@ class _AddProductState extends State<AddProduct> {
 
           'productOfferPrice': offerPriceController.text,
         };
-        var response = await http.post(Uri.parse(addProduct),
-            headers: {"Content-Type": "application/json"},
-            body: jsonEncode(regBody));
+        print(addProduct);
+        print(regBody);
 
+        var response = await http.post(
+          Uri.parse("http://192.168.1.67:3000/admin/addProduct"),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(regBody),
+        );
+        print(response);
         var jsonResponse = jsonDecode(response.body);
         print(jsonResponse['status']);
         if (jsonResponse['status']) {
@@ -68,12 +73,10 @@ class _AddProductState extends State<AddProduct> {
           productPriceController.clear();
           offerPriceController.clear();
 
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const ShowProduct(
-                      // token: widget.token,
-                      )));
+          print('traveliiing route');
+
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const HomeNav()));
         }
       }
     } catch (e) {

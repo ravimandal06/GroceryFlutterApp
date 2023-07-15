@@ -9,7 +9,7 @@ import '../config.dart';
 import 'package:http/http.dart' as http;
 
 class ShowProduct extends StatefulWidget {
-  const ShowProduct({Key? key, this.token}) : super(key: key);
+  const ShowProduct({Key? key, required this.token}) : super(key: key);
   final token;
 
   @override
