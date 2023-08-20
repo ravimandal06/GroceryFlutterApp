@@ -4,14 +4,16 @@ const mongoose = require("mongoose");
 const { connect } = require("mongoose");
 const bodyParser = require("body-parser");
 const UserRouter = require("./routes/user.routes");
+const Cartroutes = require("./routes/cartRoutes");
 const ProductRouter = require("./routes/addProduct.routes");
 const adminRoutes = require("./routes/admin_routes");
 const app = express();
 
 app.use(bodyParser.json());
 app.use("/admin", adminRoutes);
-// app.use("/", UserRouter);
-// app.use("/", ProductRouter);
+ app.use("/User", UserRouter);
+app.use("/Product", ProductRouter);
+app.use('/Cart',Cartroutes)
 
 const port = process.env.PORT || 3000;
 app.listen(process.env.PORT, () => {
