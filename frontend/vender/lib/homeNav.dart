@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vender/screens/add_product.dart';
 import 'package:vender/screens/home.dart';
+import 'package:vender/screens/performance.dart';
 
 import 'controller/navbar_controller.dart';
 
@@ -10,9 +11,10 @@ class HomeNav extends StatelessWidget {
   const HomeNav({Key? key}) : super(key: key);
   static List<Widget> pages = [
     const HomePage(),
+    const PerformancePage(),
     const AddProduct(),
-    const HomePage(),
-    const AddProduct(),
+
+    const PerformancePage(),
     const HomePage(),
 
     // const TrackerScreen(),

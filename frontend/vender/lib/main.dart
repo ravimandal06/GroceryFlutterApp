@@ -1,6 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:vender/homeNav.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:vender/config.dart';
+import 'package:vender/screens/home.dart';
+import 'package:vender/user/model/cart_model.dart';
+import 'package:vender/user/screen/checkout.dart';
+import 'package:vender/user/screen/homePage.dart';
+import 'package:vender/user/screen/reviewProduct.dart';
+import 'package:vender/user/screen/sellerInfo.dart';
 
 void main() async {
   // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -27,13 +35,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (context) => CartModel(),
+      child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
+        home:
+            //  SellerInfoPage(),
+            UserDashboard(),
+        // home: adminDashboard_,
       ),
-      home: const HomeNav(),
     );
   }
 }

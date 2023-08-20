@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
 
-import '../config.dart';
-import '../homeNav.dart';
+import '../model/addProductRequest.dart';
+import '../services/addProductResponse.dart';
 
 class AddProduct extends StatefulWidget {
   const AddProduct({Key? key, this.token})
@@ -37,53 +38,99 @@ class _AddProductState extends State<AddProduct> {
     // print(userId);
   }
 
+  // void addProductList() async {
+  //   try {
+  //     if (productNameController.text.isNotEmpty &&
+  //         categoriesController.text.isNotEmpty &&
+  //         stockController.text.isNotEmpty &&
+  //         productPriceController.text.isNotEmpty) {
+  //       var regBody = {
+  //         'userId': "64b13fe5a6c641af69dad074",
+  //         // 'productImage': '',
+  //         'productType': categoriesController.text,
+  //         'productName': productNameController.text,
+  //         'productPrice': productPriceController.text,
+  //         'productStock': stockController.text,
+  //         'productImage': 'empty',
+
+  //         'productOfferPrice': offerPriceController.text,
+  //       };
+  //       print(addProduct);
+  //       print(regBody);
+
+  //       var response = await http.post(
+  //         Uri.parse("http://192.168.1.65:3000/admin/addProduct"),
+  //         headers: {"Content-Type": "application/json"},
+  //         body: jsonEncode(regBody),
+  //       );
+  //       print(response);
+  //       var jsonResponse = jsonDecode(response.body);
+  //       print(jsonResponse['status']);
+  //       if (jsonResponse['status']) {
+  //         print(jsonResponse['message']);
+  //         productNameController.clear();
+  //         categoriesController.clear();
+  //         stockController.clear();
+  //         productPriceController.clear();
+  //         offerPriceController.clear();
+
+  //         print('traveliiing route');
+
+  //         Get.offAll(() => const HomeNav());
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print('error $e');
+  //   }
+  // }
+
+//
+
   void addProductList() async {
     try {
       if (productNameController.text.isNotEmpty &&
           categoriesController.text.isNotEmpty &&
           stockController.text.isNotEmpty &&
           productPriceController.text.isNotEmpty) {
-        var regBody = {
-          'userId': "64b13fe5a6c641af69dad074",
-          // 'productImage': '',
-          'productType': categoriesController.text,
-          'productName': productNameController.text,
-          'productPrice': productPriceController.text,
-          'productStock': stockController.text,
-          'productImage': 'empty',
-
-          'productOfferPrice': offerPriceController.text,
-        };
-        print(addProduct);
-        print(regBody);
+        var regBody = AddProductRequest(
+          userId: "64b13fe5a6c641af69dad074",
+          productType: categoriesController.text,
+          productName: productNameController.text,
+          productPrice: productPriceController.text,
+          productStock: stockController.text,
+          productImage: 'empty',
+          productOfferPrice: offerPriceController.text,
+        );
 
         var response = await http.post(
-          Uri.parse("http://192.168.1.67:3000/admin/addProduct"),
+          Uri.parse("http://192.168.1.65:3000/admin/addProduct"),
           headers: {"Content-Type": "application/json"},
-          body: jsonEncode(regBody),
+          body: jsonEncode(regBody.toJson()),
         );
-        print(response);
+
         var jsonResponse = jsonDecode(response.body);
-        print(jsonResponse['status']);
-        if (jsonResponse['status']) {
-          print(jsonResponse['message']);
+        var addProductResponse = AddProductResponse.fromJson(jsonResponse);
+
+        if (addProductResponse.status) {
+          print(addProductResponse.message);
           productNameController.clear();
           categoriesController.clear();
           stockController.clear();
           productPriceController.clear();
           offerPriceController.clear();
 
-          print('traveliiing route');
+          print('traveling route');
 
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const HomeNav()));
+          Get.back();
         }
+        print(addProductResponse.message);
       }
     } catch (e) {
       print('error $e');
     }
   }
 
+//
   @override
   Widget build(BuildContext context) {
     return Scaffold(

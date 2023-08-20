@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vender/config.dart';
+import 'package:vender/homeNav.dart';
 import 'package:vender/screens/add_product.dart';
 import 'package:vender/screens/signup.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
         "password": passwordController.text,
       };
       var response = await http.post(
-          Uri.parse("http://192.168.1.67:3000/admin/login"),
+          Uri.parse("http://192.168.1.65:3000/admin/login"),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(regBody));
 
@@ -58,8 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => AddProduct(
-              token: myToken,
+            builder: (context) => HomeNav(
+             
             ),
           ),
         );

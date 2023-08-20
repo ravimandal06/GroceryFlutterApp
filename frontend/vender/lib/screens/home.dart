@@ -1,4 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
+import '../controller/order_controller.dart';
+import 'package:http/http.dart' as http;
+
+import '../model/products.dart';
+import '../services/addProductResponse.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
 
   final double progress = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,6 +214,7 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              //
                               Padding(
                                 padding: const EdgeInsets.all(3.0),
                                 child: GestureDetector(
@@ -246,103 +256,19 @@ class _HomePageState extends State<HomePage> {
                     height: 16,
                   ),
                   //
-                  const Ordered(),
 
+                  if (selectedIndex == 0) ...{
+                    const Ordered(),
+                  } else if (selectedIndex == 1) ...{
+                    Packed(),
+                  } else if (selectedIndex == 2) ...{
+                    Delivered(),
+                  } else if (selectedIndex == 3) ...{
+                    Completed(),
+                  } else if (selectedIndex == 4) ...{
+                    const Dialog()
+                  }
                   //
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  //
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 360,
-                    child: ListView.builder(
-                      itemCount: 8,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: 330,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                color: Colors.black.withOpacity(0.03)),
-                            boxShadow: [
-                              BoxShadow(
-                                  color:
-                                      const Color.fromARGB(255, 180, 182, 184)
-                                          .withOpacity(0.04),
-                                  spreadRadius: 1,
-                                  blurRadius: 7,
-                                  offset: const Offset(0, 7))
-                            ],
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: 70,
-                                height: 70,
-                                child: Icon(
-                                  Icons.wallet_giftcard_rounded,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 250,
-                                height: 80,
-                                child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Starbucks Coffee",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.all(3.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Icon(
-                                              Icons.person_pin_circle_rounded,
-                                              color: Colors.black,
-                                            ),
-                                            Text(
-                                              "● Ongoing",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Color.fromARGB(
-                                                      255, 235, 201, 99)),
-                                            ),
-                                            Text(
-                                              "10%",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-
-                        //
-                      },
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -353,10 +279,59 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class Ordered extends StatelessWidget {
+class Ordered extends StatefulWidget {
   const Ordered({
     super.key,
   });
+
+  @override
+  State<Ordered> createState() => _OrderedState();
+}
+
+class _OrderedState extends State<Ordered> {
+  final List<Order> orders = [
+    Order(productName: "Product A", status: "Ordered", progress: "100%"),
+    Order(productName: "Product B", status: "Ordered", progress: "50%"),
+    Order(productName: "Product C", status: "Ordered", progress: "20%"),
+  ];
+  late String userId = '64b13fe5a6c641af69dad074';
+  List? items;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+  }
+
+  void fetchProducts() async {
+    try {
+      var response = await http.get(
+        Uri.parse("http://192.168.1.65:3000/admin/getProducts"),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        List<dynamic> productData = jsonResponse['products'];
+
+        List<AddProductResponse> products = productData
+            .map((productJson) => AddProductResponse.fromJson(productJson))
+            .toList();
+
+        // Now you have the list of products, you can use it to populate your UI
+        // For example, you can store the products in a state variable and display them in a ListView
+        // setState(() {
+        //   productList = products;
+        // });
+        print(response.body);
+        print(jsonResponse);
+      } else {
+        print('Request failed with s: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -376,82 +351,86 @@ class Ordered extends StatelessWidget {
         SizedBox(
           width: MediaQuery.sizeOf(context).width * 360,
           child: ListView.builder(
-            itemCount: 8,
+            itemCount: orders.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             scrollDirection: Axis.vertical,
             itemBuilder: (context, index) {
-              return Container(
-                width: 330,
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.black.withOpacity(0.03)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: const Color.fromARGB(255, 180, 182, 184)
-                            .withOpacity(0.04),
-                        spreadRadius: 1,
-                        blurRadius: 7,
-                        offset: const Offset(0, 7))
-                  ],
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 70,
-                      height: 70,
-                      child: Icon(
-                        Icons.wallet_giftcard_rounded,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 250,
-                      height: 80,
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Starbucks Coffee",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w500),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(3.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Icon(
-                                    Icons.person_pin_circle_rounded,
-                                    color: Colors.black,
-                                  ),
-                                  Text(
-                                    "● Ongoing",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color:
-                                            Color.fromARGB(255, 235, 201, 99)),
-                                  ),
-                                  Text(
-                                    "10%",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+              final order = orders[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Container(
+                  width: 330,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black.withOpacity(0.03)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: const Color.fromARGB(255, 180, 182, 184)
+                              .withOpacity(0.04),
+                          spreadRadius: 1,
+                          blurRadius: 7,
+                          offset: const Offset(0, 7))
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(
+                        width: 70,
+                        height: 70,
+                        child: Icon(
+                          Icons.wallet_giftcard_rounded,
+                          color: Colors.black,
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        width: 250,
+                        height: 80,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                order.productName,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Icon(
+                                      Icons.person_pin_circle_rounded,
+                                      color: Colors.black,
+                                    ),
+                                    Text(
+                                      order.status,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color.fromARGB(
+                                              255, 235, 201, 99)),
+                                    ),
+                                    Text(
+                                      order.progress,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
 
@@ -463,3 +442,369 @@ class Ordered extends StatelessWidget {
     );
   }
 }
+
+//
+class Packed extends StatelessWidget {
+  Packed({
+    super.key,
+  });
+
+  final List<Order> orders = [
+    Order(productName: "Product A", status: "Packed", progress: "100%"),
+    Order(productName: "Product B", status: "Packed", progress: "50%"),
+    Order(productName: "Product C", status: "Packed", progress: "20%"),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Recent Orders",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        ),
+
+        //
+        const SizedBox(
+          height: 16,
+        ),
+        //
+        SizedBox(
+          width: MediaQuery.sizeOf(context).width * 360,
+          child: ListView.builder(
+            itemCount: orders.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) {
+              final order = orders[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Container(
+                  width: 330,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black.withOpacity(0.03)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: const Color.fromARGB(255, 180, 182, 184)
+                              .withOpacity(0.04),
+                          spreadRadius: 1,
+                          blurRadius: 7,
+                          offset: const Offset(0, 7))
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(
+                        width: 70,
+                        height: 70,
+                        child: Icon(
+                          Icons.wallet_giftcard_rounded,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 250,
+                        height: 80,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                order.productName,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Icon(
+                                      Icons.person_pin_circle_rounded,
+                                      color: Colors.black,
+                                    ),
+                                    Text(
+                                      order.status,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.blue[400],
+                                      ),
+                                    ),
+                                    Text(
+                                      order.progress,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+
+              //
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+//
+class Delivered extends StatelessWidget {
+  Delivered({
+    super.key,
+  });
+
+  final List<Order> orders = [
+    Order(productName: "Product A", status: "Delivered", progress: "100%"),
+    Order(productName: "Product B", status: "Delivered", progress: "50%"),
+    Order(productName: "Product C", status: "Delivered", progress: "20%"),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Recent Orders",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        ),
+
+        //
+        const SizedBox(
+          height: 16,
+        ),
+        //
+        SizedBox(
+          width: MediaQuery.sizeOf(context).width * 360,
+          child: ListView.builder(
+            itemCount: orders.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) {
+              final order = orders[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Container(
+                  width: 330,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black.withOpacity(0.03)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: const Color.fromARGB(255, 180, 182, 184)
+                              .withOpacity(0.04),
+                          spreadRadius: 1,
+                          blurRadius: 7,
+                          offset: const Offset(0, 7))
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(
+                        width: 70,
+                        height: 70,
+                        child: Icon(
+                          Icons.wallet_giftcard_rounded,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 250,
+                        height: 80,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                order.productName,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Icon(
+                                      Icons.person_pin_circle_rounded,
+                                      color: Colors.black,
+                                    ),
+                                    Text(
+                                      order.status,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.green[400]),
+                                    ),
+                                    Text(
+                                      order.progress,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+
+              //
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+//
+class Completed extends StatelessWidget {
+  Completed({
+    super.key,
+  });
+
+  final List<Order> orders = [
+    Order(productName: "Product A", status: "Completed", progress: "100%"),
+    Order(productName: "Product B", status: "Completed", progress: "50%"),
+    Order(productName: "Product C", status: "Completed", progress: "20%"),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Recent Orders",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        ),
+
+        //
+        const SizedBox(
+          height: 16,
+        ),
+        //
+        SizedBox(
+          width: MediaQuery.sizeOf(context).width * 360,
+          child: ListView.builder(
+            itemCount: orders.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) {
+              final order = orders[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Container(
+                  width: 330,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black.withOpacity(0.03)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: const Color.fromARGB(255, 180, 182, 184)
+                              .withOpacity(0.04),
+                          spreadRadius: 1,
+                          blurRadius: 7,
+                          offset: const Offset(0, 7))
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(
+                        width: 70,
+                        height: 70,
+                        child: Icon(
+                          Icons.wallet_giftcard_rounded,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 250,
+                        height: 80,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                order.productName,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Icon(
+                                      Icons.person_pin_circle_rounded,
+                                      color: Colors.black,
+                                    ),
+                                    Text(
+                                      order.status,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.purple[400]),
+                                    ),
+                                    Text(
+                                      order.progress,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+
+              //
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+//
