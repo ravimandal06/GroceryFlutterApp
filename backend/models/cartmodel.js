@@ -13,6 +13,12 @@ const cartScheme = new Schema({
                 required: [true, "product_name is required"],
                 unique: true,
             },
+            product_type:
+            {
+                type: String,
+                // required: [true, "product_type is required"],
+            },
+
             product_price: {
                 type: Number,
             },
@@ -21,7 +27,20 @@ const cartScheme = new Schema({
             },
             product_image: {
                 type: String,
-            }
+            },
+            product_offerPrice: {
+                type: Number,
+            },
+            product_stock: {
+                type: Number,
+            },
+            product_totalPrice: {
+                type: Number,
+            },
+            isSelectedToCart: {
+                type: Boolean,
+            },
+
             
         }
     ]

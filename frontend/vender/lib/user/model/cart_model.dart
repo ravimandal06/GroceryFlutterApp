@@ -5,23 +5,47 @@ import 'package:vender/user/model/products.dart';
 class CartModel extends ChangeNotifier {
   final List<GetProductRequest> productList_ = [
     GetProductRequest(
-      productType: 'drinks',
-      productName: 'wine',
+      userId: "64afa968935c3ce30d04076f",
+      productType: 'Drinks',
+      productName: 'Wine',
       productPrice: 199.99,
       productStock: 10,
       productImage: 'assets/wine.jpg',
       productOfferPrice: 188.22,
-      quantity: 1,
+      productQuantity: 1,
       isSelectedToCart: false,
     ),
     GetProductRequest(
-      productType: 'fruits',
-      productName: 'apple',
+      userId: "64afa968935c3ce30d04076f",
+      productType: 'Fruits',
+      productName: 'Apple',
       productPrice: 88.99,
       productStock: 20,
       productImage: 'assets/apple.jpg',
       productOfferPrice: 76.22,
-      quantity: 1,
+      productQuantity: 1,
+      isSelectedToCart: false,
+    ),
+    GetProductRequest(
+      userId: "64afa968935c3ce30d04076f",
+      productType: 'Drinks',
+      productName: 'Vodka',
+      productPrice: 299.99,
+      productStock: 10,
+      productImage: 'assets/wine.jpg',
+      productOfferPrice: 148.22,
+      productQuantity: 1,
+      isSelectedToCart: false,
+    ),
+    GetProductRequest(
+      userId: "64afa968935c3ce30d04076f",
+      productType: 'Fruits',
+      productName: 'Orange',
+      productPrice: 188.99,
+      productStock: 20,
+      productImage: 'assets/apple.jpg',
+      productOfferPrice: 76.22,
+      productQuantity: 1,
       isSelectedToCart: false,
     ),
   ];
@@ -32,12 +56,17 @@ class CartModel extends ChangeNotifier {
 
   void addToCart(int index) {
     if (_cartItems.contains(productList[index])) {
-      if (cartItems[index].quantity < cartItems[index].productStock) {
-        cartItems[index].quantity++;
+      if (cartItems[index].productQuantity < cartItems[index].productStock) {
+        cartItems[index].productQuantity++;
         GetStorage().write('productName', cartItems[index].productName);
-        GetStorage().write('productCategory', cartItems[index].productType);
+        GetStorage().write('productType', cartItems[index].productType);
         GetStorage().write('productPrice', cartItems[index].productPrice);
-        GetStorage().write('productQuantity', cartItems[index].quantity);
+        GetStorage().write('productQuantity', cartItems[index].productQuantity);
+        print(GetStorage().read('productName'));
+        print(GetStorage().read('productType'));
+        print(GetStorage().read('productPrice'));
+        print(GetStorage().read('productQuantity'));
+
         notifyListeners();
       }
     } else {
@@ -53,15 +82,15 @@ class CartModel extends ChangeNotifier {
   }
 
   void decreaseQuantity(int index) {
-    if (cartItems[index].quantity > 1) {
-      cartItems[index].quantity--;
+    if (cartItems[index].productQuantity > 1) {
+      cartItems[index].productQuantity--;
       notifyListeners();
     }
   }
 
   void increaseQuantity(int index) {
-    if (cartItems[index].quantity < cartItems[index].productStock) {
-      cartItems[index].quantity++;
+    if (cartItems[index].productQuantity < cartItems[index].productStock) {
+      cartItems[index].productQuantity++;
       notifyListeners();
     }
   }
@@ -95,7 +124,7 @@ class CartModel extends ChangeNotifier {
       GetStorage().write('discount', discount);
       totalPrice -= discount;
       GetStorage().write('totalPrice', totalPrice);
-      totalPrice *= cartItems[i].quantity;
+      totalPrice *= cartItems[i].productQuantity;
       GetStorage().write('totalPrice', totalPrice);
     }
     return totalPrice.toStringAsFixed(2);
@@ -106,7 +135,7 @@ class CartModel extends ChangeNotifier {
     for (int i = 0; i < _cartItems.length; i++) {
       subTotal += double.parse(_cartItems[i].productPrice.toString());
       GetStorage().write('subTotal', subTotal);
-      subTotal *= cartItems[i].quantity;
+      subTotal *= cartItems[i].productQuantity;
     }
     return subTotal.toStringAsFixed(2);
   }

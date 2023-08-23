@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:vender/constant.dart';
@@ -18,43 +19,49 @@ class UserDashboard extends StatefulWidget {
 class _UserDashboardState extends State<UserDashboard> {
   final List<GetProductRequest> productList_ = [
     GetProductRequest(
-      productType: 'drinks',
-      productName: 'wine',
+      userId: "64afa968935c3ce30d04076f",
+      productType: 'Drinks',
+      productName: 'Wine',
       productPrice: 199.99,
       productStock: 10,
       productImage: 'assets/wine.jpg',
       productOfferPrice: 188.22,
-      quantity: 1,
+      productQuantity: 1,
       isSelectedToCart: false,
     ),
     GetProductRequest(
-      productType: 'fruits',
-      productName: 'apple',
+      userId: "64afa968935c3ce30d04076f",
+      productType: 'Fruits',
+      productName: 'Apple',
       productPrice: 88.99,
       productStock: 20,
       productImage: 'assets/apple.jpg',
       productOfferPrice: 76.22,
-      quantity: 1,
+      productQuantity: 1,
       isSelectedToCart: false,
     ),
-    // GetProductRequest(
-    //   productType: 'drinks',
-    //   productName: 'wine',
-    //   productPrice: 199.99,
-    //   productStock: 10,
-    //   productImage: 'assets/wine.jpg',
-    //   productOfferPrice: 188.22,
-    //   // isSelectedToCart: false,
-    // ),
-    // GetProductRequest(
-    //   productType: 'fruits',
-    //   productName: 'apple',
-    //   productPrice: 88.99,
-    //   productStock: 20,
-    //   productImage: 'assets/apple.jpg',
-    //   productOfferPrice: 76.22,
-    //   // isSelectedToCart: true,
-    // ),
+    GetProductRequest(
+      userId: "64afa968935c3ce30d04076f",
+      productType: 'Drinks',
+      productName: 'Vodka',
+      productPrice: 299.99,
+      productStock: 10,
+      productImage: 'assets/wine.jpg',
+      productOfferPrice: 148.22,
+      productQuantity: 1,
+      isSelectedToCart: false,
+    ),
+    GetProductRequest(
+      userId: "64afa968935c3ce30d04076f",
+      productType: 'Fruits',
+      productName: 'Orange',
+      productPrice: 188.99,
+      productStock: 20,
+      productImage: 'assets/apple.jpg',
+      productOfferPrice: 76.22,
+      productQuantity: 1,
+      isSelectedToCart: false,
+    ),
   ];
 
   int selectedCategory = 0;
@@ -71,17 +78,23 @@ class _UserDashboardState extends State<UserDashboard> {
   //
 
   bool isProductAddedCart_ = false;
+  bool isProductAddedToCart(GetProductRequest product) {
+    return selectedItems.contains(product);
+  }
 
   void toggleSelection(int index) {
     setState(() {
       productList_[index].isSelectedToCart =
-          !productList_[index].isSelectedToCart;
-      print(productList_[index].isSelectedToCart);
+          productList_[index].isSelectedToCart;
+      print(
+          "is selected added to cart ? -> ${productList_[index].isSelectedToCart}");
     });
   }
 
   void addToCart(GetProductRequest product) {
     setState(() {
+      // Update the isSelectedToCart property
+      product.isSelectedToCart = true;
       selectedItems.add(product);
       print(selectedItems.length);
     });
@@ -302,6 +315,7 @@ class _UserDashboardState extends State<UserDashboard> {
                     itemBuilder: (context, index) {
                       final productLists_ = productList_[index];
                       GetProductRequest productSelective_ = productList_[index];
+                      productSelective_.isSelectedToCart = true;
                       return Padding(
                         padding: const EdgeInsets.only(right: 9),
                         child: InkWell(
@@ -399,41 +413,65 @@ class _UserDashboardState extends State<UserDashboard> {
                                                               context,
                                                               listen: false)
                                                           .addToCart(index);
+                                                      if (!isProductAddedToCart(
+                                                          productList_[
+                                                              index])) {
+                                                        addToCart(productList_[
+                                                            index]);
+                                                        Get.snackbar(
+                                                          "Product Added",
+                                                          "Product added to cart",
+                                                          snackPosition:
+                                                              SnackPosition
+                                                                  .BOTTOM,
+                                                          backgroundColor:
+                                                              Colors.green[300],
+                                                          colorText:
+                                                              Colors.white,
+                                                          duration:
+                                                              const Duration(
+                                                                  seconds: 2),
+                                                          icon: const Icon(
+                                                            Icons
+                                                                .check_circle_outline_rounded,
+                                                            color: Colors.white,
+                                                          ),
+                                                        );
+                                                      }
                                                     });
                                                   },
                                                   child: Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                          color: productSelective_
-                                                                      .isSelectedToCart &&
-                                                                  GetStorage().read(
-                                                                          'cartItems') !=
-                                                                      null
+                                                    width: isProductAddedToCart(
+                                                            productList_[index])
+                                                        ? 50
+                                                        : 40,
+                                                    height: 40,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30),
+                                                      color:
+                                                          isProductAddedToCart(
+                                                                  productList_[
+                                                                      index])
                                                               ? Colors
                                                                   .yellow[300]
                                                               : const Color(
-                                                                  0xff0C1A30)),
-                                                      child: productSelective_
-                                                                  .isSelectedToCart &&
-                                                              GetStorage().read(
-                                                                      'cartItems') !=
-                                                                  null
-                                                          ? const Icon(
-                                                              Icons
-                                                                  .shopping_bag_outlined,
-                                                              color: Color(
                                                                   0xff0C1A30),
-                                                            )
-                                                          : const Icon(
-                                                              Icons.add,
-                                                              color:
-                                                                  Colors.white,
-                                                            )),
+                                                    ),
+                                                    child: isProductAddedToCart(
+                                                            productList_[index])
+                                                        ? const Icon(
+                                                            Icons
+                                                                .shopping_bag_outlined,
+                                                            color: Color(
+                                                                0xff0C1A30),
+                                                          )
+                                                        : const Icon(
+                                                            Icons.add,
+                                                            color: Colors.white,
+                                                          ),
+                                                  ),
                                                 ),
                                               ],
                                             ),

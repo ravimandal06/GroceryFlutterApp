@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -7,47 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/screen/checkout.dart';
 import 'package:vender/user/screen/homePage.dart';
-import 'package:http/http.dart' as http;
-import '../model/cartModel.dart';
+// import '../model/cartModel.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
-
-  // List<String> cartItems = [
-  //   GetStorage().read('productName'),
-  //   GetStorage().read('productType'),
-  //   GetStorage().read('productPrice'),
-  //   GetStorage().read('productQuantity'),
-  //   GetStorage().read('totalPrice'),
-  // ];
-
-  continueCart() async {
-    try {
-      if (CartModel().cartItems.isNotEmpty) {
-        var regBody = CartDetailModel(
-            productName: CartModel().cartItems.productName,
-            productType: CartModel().cartItems.productType,
-            productPrice: CartModel().cartItems.productPrice,
-            productQuantity: CartModel().cartItems.productQuantity,
-            totalPrice: CartModel().cartItems.totalPrice);
-
-        var response = await http.post(
-          Uri.parse('http://190.190.1.106:3000/user/getCartProducts'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(regBody.toJson()),
-        );
-
-        var jsonResponse = jsonDecode(response.body);
-        var cartProductResponse = CartDetailModel.fromJson(jsonResponse);
-
-        print(cartProductResponse);
-      }
-    } catch (e) {
-      print('error in cart.dart $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +157,7 @@ class CartPage extends StatelessWidget {
                                                     ),
                                                   ),
                                                   Text(
-                                                    "${value.cartItems[index].quantity}",
+                                                    "${value.cartItems[index].productQuantity}",
                                                     style: const TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:

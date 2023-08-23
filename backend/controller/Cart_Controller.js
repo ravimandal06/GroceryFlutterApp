@@ -3,7 +3,7 @@ const addToCart = async (req, res) => {
     try {
         const cartdata = req.body;
         console.log(cartdata);
-        const cartList = await CartService.addToCart(cartdata.userId, cartdata.product_name, cartdata.product_price, cartdata.product_quantity, cartdata.product_image);
+        const cartList = await CartService.addToCart(cartdata.userId, cartdata.product_name, cartdata.product_type, cartdata.product_price, cartdata.product_quantity, cartdata.product_image, cartdata.product_offerPrice, cartdata.product_stock, cartdata.product_totalPrice, cartdata.isSelectedToCart);
         if (cartList) {
             console.log(cartList);
             return res.status(200).json(cartList );

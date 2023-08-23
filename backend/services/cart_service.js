@@ -1,6 +1,6 @@
 const cartModel = require("../models/cartmodel");
 class CartService{
-    static async addToCart(userId, product_name, product_price, product_quantity, product_image){
+    static async addToCart(userId, product_name, product_type, product_price,  product_quantity, product_image, product_offerPrice, product_stock, product_totalPrice, isSelectedToCart){
          // i need to add the push the data to cart if cart is already exsist for user if not create one
         try {
             console.log(userId);
@@ -8,9 +8,15 @@ class CartService{
             if (cartList) {
                 const product = {
                     product_name,
+                    product_type,
                     product_price,
                     product_quantity,
-                    product_image
+                    product_image,
+                    product_offerPrice,
+                    product_stock,
+                    product_totalPrice,
+                    isSelectedToCart,
+                   
                 }
                 cartList.cart_list.push(product);
                 await cartList.save();
@@ -20,9 +26,16 @@ class CartService{
                     userId,
                     cart_list: [{
                         product_name,
+                        product_type,
                         product_price,
                         product_quantity,
-                        product_image
+                        product_image,
+                        product_offerPrice,
+                        product_stock,
+                        product_totalPrice,
+                        isSelectedToCart
+                        
+
                     }]
                 });
                 await cartList.save();
