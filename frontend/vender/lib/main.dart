@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/screen/homePage.dart';
+import 'package:vender/user/screen/p.dart';
 
 void main() async {
   // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         home:
             //  SellerInfoPage(),
             const UserDashboard(),
+        // CartPage(),
         // home: adminDashboard_,
       ),
     );

@@ -32,4 +32,18 @@ const getUserCartList = async (req, res) => {
         return res.status(400).json({ message:'Error' });
     }
 }
-module.exports = {addToCart, getUserCartList};
+const deleteCart = async (req, res) => {
+    try {
+        const { userId, productId } = req.params;
+        const success = await CartService.deleteCart(userId, productId);
+        if (success) {
+            return res.status(200).json({ message: "Cart item deleted successfully" });
+        } else {
+            return res.status(400).json({ message: "Failed to delete cart item" });
+        }
+    } catch (error) {
+        return res.status(400).json({ message: "Error" });
+    }
+};
+
+module.exports = { addToCart, getUserCartList, deleteCart };
