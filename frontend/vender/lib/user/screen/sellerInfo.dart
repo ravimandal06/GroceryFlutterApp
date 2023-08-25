@@ -86,6 +86,11 @@ class _SellerInfoPageState extends State<SellerInfoPage> {
       print(productList_[index].productName);
       String productName = productList_[index].productName;
       double productPrice = productList_[index].productPrice;
+      String productType = productList_[index].productType;
+      String productImage = productList_[index].productImage;
+      int productQuantity = productList_[index].productQuantity;
+      bool isSelectedToCart = productList_[index].isSelectedToCart;
+      double productOfferPrice = productList_[index].productOfferPrice;
 
       // Use Navigator to push a new page with the selected product name.
       Navigator.push(
@@ -94,6 +99,11 @@ class _SellerInfoPageState extends State<SellerInfoPage> {
           builder: (context) => ProductDetailsPage(
             productName: productName,
             productPrice: "$productPrice",
+            productType: productType,
+            productImage: productImage,
+            productQuantity: productQuantity,
+            isSelectedToCart: isSelectedToCart,
+            productOfferPrice: productOfferPrice,
           ),
         ),
       );

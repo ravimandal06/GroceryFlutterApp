@@ -5,10 +5,58 @@ import 'package:provider/provider.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/screen/checkout.dart';
 import 'package:vender/user/screen/homePage.dart';
+
 // import '../model/cartModel.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   const CartPage({super.key});
+
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  // Future<List<GetProductRequest>> getCart() async {
+  //   const String url =
+  //       'http://190.190.2.226:3000/Cart/getUserCartList/64afa968935c3ce30d04076f'; // Replace with your actual API endpoint
+
+  //   final response = await http.get(Uri.parse(url));
+
+  //   if (response.statusCode == 200) {
+  //     final List<dynamic> jsonList = jsonDecode(response.body);
+
+  //     // Convert JSON list to List of GetProductRequest objects
+  //     List<GetProductRequest> productList =
+  //         jsonList.map((json) => GetProductRequest.fromJson(json)).toList();
+
+  //     return productList;
+  //   } else {
+  //     throw Exception("GET request failed with status: ${response.statusCode}");
+  //   }
+  // }
+
+  // void main() async {
+  //   try {
+  //     List<GetProductRequest> productList = await getCart();
+
+  //     // Print product details
+  //     for (var product in productList) {
+  //       print("Product Name: ${product.productName}");
+  //       print("Product Type: ${product.productType}");
+  //       print("Product Price: ${product.productPrice}");
+  //       // Add other properties you want to print
+  //       print("------------------------");
+  //     }
+  //   } catch (e) {
+  //     print("Error caught: $e");
+  //   }
+  // }
+
+  // @override
+  // initState() {
+  //   super.initState();
+  //   getCart();
+  // }
 
   @override
   Widget build(BuildContext context) {

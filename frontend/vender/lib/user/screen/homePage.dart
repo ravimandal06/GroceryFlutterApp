@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:vender/constant.dart';
 import 'package:vender/user/screen/cart.dart';
@@ -105,6 +104,11 @@ class _UserDashboardState extends State<UserDashboard> {
       print(productList_[index].productName);
       String productName = productList_[index].productName;
       double productPrice = productList_[index].productPrice;
+      String productType = productList_[index].productType;
+      String productImage = productList_[index].productImage;
+      int productQuantity = productList_[index].productQuantity;
+      bool isSelectedToCart = productList_[index].isSelectedToCart;
+      double productOfferPrice = productList_[index].productOfferPrice;
 
       // Use Navigator to push a new page with the selected product name.
       Navigator.push(
@@ -113,11 +117,18 @@ class _UserDashboardState extends State<UserDashboard> {
           builder: (context) => ProductDetailsPage(
             productName: productName,
             productPrice: "$productPrice",
+            productType: productType,
+            productImage: productImage,
+            productQuantity: productQuantity,
+            isSelectedToCart: isSelectedToCart,
+            productOfferPrice: productOfferPrice,
           ),
         ),
       );
     });
   }
+
+  //
 
   //
 
@@ -416,6 +427,7 @@ class _UserDashboardState extends State<UserDashboard> {
                                                       if (!isProductAddedToCart(
                                                           productList_[
                                                               index])) {
+                                                        // postData();
                                                         addToCart(productList_[
                                                             index]);
                                                         Get.snackbar(

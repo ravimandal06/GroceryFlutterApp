@@ -98,7 +98,7 @@ class CartModel extends ChangeNotifier {
   int _quantity = 1;
 
   void _increaseQuantity() {
-    _quantity++;
+    // _quantity++;
     notifyListeners();
   }
 
