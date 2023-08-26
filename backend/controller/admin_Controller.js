@@ -47,7 +47,7 @@ const addProduct = async (req, res) => {
     return res.json({
       status: true,
       details: newProduct,
-      message: "Product added successfully",
+      message: "Product added successfully ---->",
       token: newProduct._id,
     });
   } catch (err) {
@@ -58,18 +58,13 @@ const addProduct = async (req, res) => {
 
 const getProduct = async (req, res) => {
   try {
-    console.log("Get product route");
-    const productId = req.params.productId; // Assuming you're passing the product ID in the URL parameter
-    const product = await productModel.findById(productId);
-    
-    if (!product) {
-      return res.status(404).json({ status: false, error: "Product not found" });
-    }
+    console.log("Get all products route");
+    const products = await productModel.find(); // Retrieve all products
     
     return res.json({
       status: true,
-      details: product,
-      message: "Product retrieved successfully",
+      products: products,
+      message: "All products retrieved successfully",
     });
   } catch (err) {
     console.log("Error:", err);
@@ -78,3 +73,4 @@ const getProduct = async (req, res) => {
 };
 
 module.exports = { registerAdmin, loginAdmin, addProduct, getProduct };
+
