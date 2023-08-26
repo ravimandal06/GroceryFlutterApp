@@ -32,14 +32,14 @@ exports.getProduct = async (req, res, next) => {
     }
 }
 
-exports.deleteProduct = async (req, res, next) => {
-    try{
-        const { id } = req.body;
-        let deletedData = await productService.deleteProduct(id);   
-        res.json({ status: true, success: deletedData });
+// exports.deleteProduct = async (req, res, next) => {
+//     try{
+//         const { id } = req.body;
+//         let deletedData = await productService.deleteProduct(id);   
+//         res.json({ status: true, success: deletedData });
 
-    } catch (err) {
-        console.log("---> err -->", err);
-        next(err);
-    }
-}
+//     } catch (err) {
+//         console.log("---> err -->", err);
+//         next(err);
+//     }
+// }

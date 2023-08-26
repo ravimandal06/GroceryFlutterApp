@@ -1,28 +1,45 @@
-const {deletedData} = require('../controller/product_controller');
-const ProductModel = require('../models/product.model');
+const { deletedData } = require("../controller/product_controller");
+const ProductModel = require("../models/product.model");
 
-class ProductService{
-    static async addProduct(productType, productName, productPrice, productStock, productImage, productOfferPrice){
+class ProductService {
+  static async addProduct(
+    productType,
+    productName,
+    productPrice,
+    productStock,
+    productImage,
+    productOfferPrice
+  ) {
+    const productData = new ProductModel({
+      productType,
+      productName,
+      productPrice,
+      productStock,
+      productImage,
+      productOfferPrice,
+    });
+    return await productData.save();
+  }
 
-        
-            const productData = new ProductModel({productType, productName, productPrice, productStock, productImage, productOfferPrice});
-            return await productData.save();
-        
-    }
+  static async getUserProductList(userId) {
+    const productList = await ProductModel.find({ userId });
+    return productList;
+  }
+  static async deleteProduct(id) {
+    try {
+      const existingProduct = await ProductModel.findById(id);
 
-    static async getUserProductList(userId){
-       
-            const productList =  await ProductModel.find({userId});
-            return productList;
-       
-    
+      if (!existingProduct) {
+        console.log("Product not found for deletion");
+        return null; // Or throw an error if preferred
+      }
+
+      const deletedProduct = await ProductModel.findByIdAndDelete(id);
+      return deletedProduct;
+    } catch (error) {
+      throw error;
     }
-    static async deleteProduct(id){
-       
-            const deleted = await ProductModel.findByIdAndDelete({_id:id});
-            return deleted;
-        
-    }
+  }
 }
 
 module.exports = ProductService;

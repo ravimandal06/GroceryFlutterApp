@@ -1,5 +1,6 @@
 const adminModel = require("../models/admin");
 const productModel = require("../models/product.model");
+const productService = require("../services/product_service");
 const registerAdmin = async (req, res) => {
   try {
     console.log("Register route for admin");
@@ -60,17 +61,39 @@ const getProduct = async (req, res) => {
   try {
     console.log("Get all products route");
     const products = await productModel.find(); // Retrieve all products
-    
+    console.log(products);
     return res.json({
       status: true,
       products: products,
       message: "All products retrieved successfully",
     });
+    
   } catch (err) {
     console.log("Error:", err);
     return res.status(500).json(err);
   }
 };
 
-module.exports = { registerAdmin, loginAdmin, addProduct, getProduct };
+const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.body;
+    console.log("Deleting product with ID:", id);
+
+    const deletedProduct = await productService.deleteProduct(id);
+    console.log("Deleted product:", deletedProduct);
+
+    if (!deletedProduct) {
+      console.log("Product not found");
+      return res.json({ status: false, message: "Product not found" });
+    }
+
+    return res.json({ status: true, message: "Product deleted successfully" });
+  } catch (err) {
+    console.log("Error:", err);
+    return res.status(500).json(err);
+  }
+};
+
+
+module.exports = { registerAdmin, loginAdmin, addProduct, getProduct, deleteProduct };
 
