@@ -2,30 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:vender/user/model/globalProducts.dart';
 
-import 'package:vender/user/screen/emptyCart.dart';
+class ProductListScreen extends StatefulWidget {
+  const ProductListScreen({super.key});
 
-class CartPage extends StatelessWidget {
-  const CartPage({super.key});
+  @override
+  _ProductListScreenState createState() => _ProductListScreenState();
+}
 
-  Future<List<dynamic>> fetchCartProducts() async {
-    final response = await http.get(Uri.parse(
-        'http://190.190.2.226:3000/Cart/getUserCartList/64afa968935c3ce30d04076f'));
+class _ProductListScreenState extends State<ProductListScreen> {
+  List<GetProduct> products = [];
 
-    if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+  }
 
-      if (jsonResponse != null && jsonResponse['cart_list'] is List<dynamic>) {
-        final cartProducts = jsonResponse['cart_list'] as List<dynamic>;
-        return cartProducts;
+  Future<void> fetchProducts() async {
+    try {
+      final response = await http
+          .get(Uri.parse('http://190.190.2.226:3000/admin/getProduct'));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = json.decode(response.body);
+        print(response.statusCode);
+
+        List<GetProduct> productList =
+            jsonResponse.map((data) => GetProduct.fromJson(data)).toList();
+
+        setState(() {
+          products = productList;
+        });
       } else {
-        throw Exception("Response is not a valid cart list");
+        throw Exception(
+            "GET request failed with status: ${response.statusCode}");
       }
-    } else {
-      throw Exception("GET request failed with status: ${response.statusCode}");
+    } catch (e) {
+      print("Error fetching products: $e");
     }
   }
 
@@ -33,63 +48,24 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cart"),
+        title: const Text('Product List'),
       ),
-      body: FutureBuilder<List<dynamic>>(
-        future: fetchCartProducts(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            // Navigate to another screen when data is empty
-            Future.microtask(() {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => const EmptyCart(),
-              ));
-            });
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final product = snapshot.data![index];
-                return ListTile(
-                  title: Text(product['product_name']),
-                  subtitle: Text('Price: \$${product['_id']}'),
-                  leading: Image.asset(
-                    product['product_image'], // Display the product image
-                    fit: BoxFit.cover,
-                  ), // Display the product image
-
-                  // Add other fields as needed
-                );
-              },
-            );
-          }
+      body: ListView.builder(
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(products[index].productName),
+            subtitle: Text(products[index].productPrice),
+            // You can add more widgets to display other product details
+          );
         },
       ),
     );
   }
 }
 
-class NoProductsScreen extends StatelessWidget {
-  const NoProductsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("No Products"),
-      ),
-      body: const Center(
-        child: Text("No products available."),
-      ),
-    );
-  }
-}
-
 void main() {
-  runApp(MaterialApp(home: CartPage()));
+  runApp(const MaterialApp(
+    home: ProductListScreen(),
+  ));
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +7,7 @@ import 'package:vender/constant.dart';
 import 'package:vender/user/screen/cart.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/model/products.dart';
-
+import 'package:http/http.dart' as http;
 import 'productDetailPage.dart';
 
 class UserDashboard extends StatefulWidget {
@@ -16,6 +18,27 @@ class UserDashboard extends StatefulWidget {
 }
 
 class _UserDashboardState extends State<UserDashboard> {
+//
+  Future<List<dynamic>> fetchProducts() async {
+    final response = await http
+        .get(Uri.parse('http://190.190.2.226:3000/admin/getProduct/'));
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+
+      if (jsonResponse != null &&
+          jsonResponse['product_list'] is List<dynamic>) {
+        final products = jsonResponse['product_list'] as List<dynamic>;
+        return products;
+      } else {
+        throw Exception("Response is not a valid product list");
+      }
+    } else {
+      throw Exception("GET request failed with status: ${response.statusCode}");
+    }
+  }
+
+//
   final List<GetProductRequest> productList_ = [
     GetProductRequest(
       userId: "64afa968935c3ce30d04076f",
