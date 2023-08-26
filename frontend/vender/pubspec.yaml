@@ -28,14 +28,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  http: ^1.1.0
   badges: ^3.1.1
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.6.3
   firebase_core: ^2.14.0
+  firebase_storage: ^11.2.6
   flutter:
     sdk: flutter
-  # flutter_credit_card: ^3.0.7
   flutter_credit_card: ^3.0.7
   flutter_secure_storage: ^8.0.0
   flutter_slidable: ^3.0.0
@@ -44,6 +43,9 @@ dependencies:
   geolocator: ^9.0.2
   get: ^4.6.5
   get_storage: ^2.1.1
+  http: ^1.1.0
+  image: ^4.0.17
+  image_picker: ^1.0.2
   jwt_decoder: ^2.0.1
   linear_progress_bar: ^1.1.0
   persistent_bottom_nav_bar: ^5.0.2

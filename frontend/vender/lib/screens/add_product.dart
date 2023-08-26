@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,8 @@ import 'package:http/http.dart' as http;
 
 import '../model/addProductRequest.dart';
 import '../services/addProductResponse.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class AddProduct extends StatefulWidget {
   const AddProduct({Key? key, this.token})
@@ -85,6 +88,76 @@ class _AddProductState extends State<AddProduct> {
   // }
 
 //
+  File? _image;
+  String? uploadedImageUrl;
+
+  Future<void> _showImagePickerDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Select Image Source"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.camera),
+                title: const Text("Camera"),
+                onTap: () {
+                  _getImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.image),
+                title: const Text("Gallery"),
+                onTap: () {
+                  _getImage(ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _uploadImage() async {
+    try {
+      if (_image == null) return;
+
+      final storage = firebase_storage.FirebaseStorage.instance;
+      final imageRef =
+          storage.ref().child('productImage/${DateTime.now()}.jpg');
+
+      await imageRef.putFile(_image!);
+
+      final imageUrl = await imageRef.getDownloadURL();
+      setState(() {
+        uploadedImageUrl = imageUrl;
+        print("Image Store : $uploadedImageUrl");
+      });
+
+      // Now you have the imageUrl which you can store or use as needed.
+      print('Image URL: $imageUrl');
+    } catch (e) {
+      print("error caught : $e");
+    }
+  }
+
+  Future _getImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   void addProductList() async {
     try {
@@ -98,12 +171,12 @@ class _AddProductState extends State<AddProduct> {
           productName: productNameController.text,
           productPrice: productPriceController.text,
           productStock: stockController.text,
-          productImage: 'empty',
+          productImage: uploadedImageUrl ?? 'empty',
           productOfferPrice: offerPriceController.text,
         );
 
         var response = await http.post(
-          Uri.parse("http://192.168.1.65:3000/admin/addProduct"),
+          Uri.parse("http://190.190.2.226:3000/admin/addProduct/"),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(regBody.toJson()),
         );
@@ -179,28 +252,43 @@ class _AddProductState extends State<AddProduct> {
                               offset: const Offset(0, 3),
                             ),
                           ]),
-                      child: const Center(child: Text("data")),
+                      child: Center(
+                        child: _image == null
+                            ? const Text('No image selected.')
+                            : Image.file(
+                                _image!,
+                                fit: BoxFit.cover,
+                              ),
+                      ),
                     ),
                     const SizedBox(
                       width: 20,
                     ),
-                    Container(
-                      width: 110,
-                      height: 110,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ]),
-                      child: const Center(
-                        child: Icon(
-                          Icons.add_a_photo_rounded,
-                          size: 50,
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          //
+                          _showImagePickerDialog();
+                        });
+                      },
+                      child: Container(
+                        width: 110,
+                        height: 110,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                blurRadius: 5,
+                                offset: const Offset(0, 3),
+                              ),
+                            ]),
+                        child: const Center(
+                          child: Icon(
+                            Icons.add_a_photo_rounded,
+                            size: 50,
+                          ),
                         ),
                       ),
                     ),
@@ -409,12 +497,14 @@ class _AddProductState extends State<AddProduct> {
                     onPressed: () {
                       setState(() {
                         addProductList();
+                        if (_formKey.currentState!.validate()) {
+                          // Form is valid, process the data
+                          // For example, save it to a database
+                          // print('Name: ');
+
+                          _uploadImage();
+                        }
                       });
-                      if (_formKey.currentState!.validate()) {
-                        // Form is valid, process the data
-                        // For example, save it to a database
-                        // print('Name: ');
-                      }
                     },
                     child: const Text('Upload Product'),
                   ),

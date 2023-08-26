@@ -10,9 +10,9 @@ import 'controller/navbar_controller.dart';
 class HomeNav extends StatelessWidget {
   const HomeNav({Key? key}) : super(key: key);
   static List<Widget> pages = [
+    const AddProduct(),
     const HomePage(),
     const PerformancePage(),
-    const AddProduct(),
 
     const PerformancePage(),
     const HomePage(),

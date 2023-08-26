@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:vender/config.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/screen/homePage.dart';
 import 'package:vender/user/screen/p.dart';
@@ -39,11 +40,11 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
         ),
-        home:
-            //  SellerInfoPage(),
-            const UserDashboard(),
+        // home:
+        //     //  SellerInfoPage(),
+        //     const UserDashboard(),
         // CartPage(),
-        // home: adminDashboard_,
+        home: adminDashboard_,
       ),
     );
   }
