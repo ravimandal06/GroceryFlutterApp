@@ -30,7 +30,12 @@ const productSchema = new Schema(
     },
     productOfferPrice: {
       type: Number,
-    //   required: [false, "optional"],
+      //   required: [false, "optional"],
+    },
+
+    shopLocation: {
+      type: String,
+      required: [true, "shopLocation is required"],
     },
   },
   { timestamps: true }

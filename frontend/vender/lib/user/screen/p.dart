@@ -1,71 +1,64 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+// import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
 
-import 'package:vender/user/model/globalProducts.dart';
+// import 'package:vender/user/model/globalProducts.dart';
 
-class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key});
+// class ProductListPage extends StatefulWidget {
+//   const ProductListPage({Key? key}) : super(key: key);
 
-  @override
-  _ProductListScreenState createState() => _ProductListScreenState();
-}
+//   @override
+//   State<ProductListPage> createState() => _ProductListPageState();
+// }
 
-class _ProductListScreenState extends State<ProductListScreen> {
-  List<GetProduct> products = [];
+// class _ProductListPageState extends State<ProductListPage> {
+//   late Future<List<GetProduct>> _products;
 
-  @override
-  void initState() {
-    super.initState();
-    fetchProducts();
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _products = _getProducts();
+//   }
 
-  Future<void> fetchProducts() async {
-    try {
-      final response = await http
-          .get(Uri.parse('http://190.190.2.226:3000/admin/getProduct'));
+//   Future<List<GetProduct>> _getProducts() async {
+//     final response =
+//         await http.get(Uri.parse('http://190.190.2.226:3000/admin/getProduct'));
+//     if (response.statusCode == 200) {
+//       final json = jsonDecode(response.body);
+//       return List<GetProduct>.from(
+//           json['products'].map((e) => GetProduct.fromJson(e)));
+//     } else {
+//       throw Exception('Failed to get products');
+//     }
+//   }
 
-      if (response.statusCode == 200) {
-        final List<dynamic> jsonResponse = json.decode(response.body);
-        print(response.statusCode);
-
-        List<GetProduct> productList =
-            jsonResponse.map((data) => GetProduct.fromJson(data)).toList();
-
-        setState(() {
-          products = productList;
-        });
-      } else {
-        throw Exception(
-            "GET request failed with status: ${response.statusCode}");
-      }
-    } catch (e) {
-      print("Error fetching products: $e");
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Product List'),
-      ),
-      body: ListView.builder(
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(products[index].productName),
-            subtitle: Text(products[index].productPrice),
-            // You can add more widgets to display other product details
-          );
-        },
-      ),
-    );
-  }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: ProductListScreen(),
-  ));
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Product List'),
+//       ),
+//       body: FutureBuilder<List<GetProduct>>(
+//         future: _products,
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return const Center(child: CircularProgressIndicator());
+//           } else if (snapshot.hasError) {
+//             return Center(child: Text(snapshot.error.toString()));
+//           } else {
+//             return ListView.builder(
+//               itemCount: snapshot.data!.length,
+//               itemBuilder: (context, index) {
+//                 return ListTile(
+//                   title: Text(snapshot.data![index].productName),
+//                   subtitle: Text(snapshot.data![index].productPrice),
+//                   leading: Image.network(snapshot.data![index].productImage),
+//                 );
+//               },
+//             );
+//           }
+//         },
+//       ),
+//     );
+//   }
+// }

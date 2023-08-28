@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/screen/checkout.dart';
@@ -20,6 +19,8 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  List<dynamic> cartProduct = [];
+  double totalAmount = 0; // Initialize totalAmount to 0
   Future<List<dynamic>> fetchCartProducts() async {
     final response = await http.get(Uri.parse(
         'http://190.190.2.226:3000/Cart/getUserCartList/64afa968935c3ce30d04076f'));
@@ -29,6 +30,15 @@ class _CartPageState extends State<CartPage> {
 
       if (jsonResponse != null && jsonResponse['cart_list'] is List<dynamic>) {
         final cartProducts = jsonResponse['cart_list'] as List<dynamic>;
+        for (var product in cartProducts) {
+          print('Product Name: ${product['product_name']}');
+          print('Quantity: ${product['product_quantity']}');
+          print('Price: ${product['product_price']}');
+          print('Product ID: ${product['_id']}');
+          // Add more properties as needed
+
+          print('-----------------------');
+        }
         return cartProducts;
       } else {
         throw Exception("Response is not a valid cart list");
@@ -57,10 +67,81 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
+  // void calculateTotalPrice() {
+  //   double totalPrice = 0;
+  //   for (var product in cartProduct) {
+  //     double productPrice = product['product_price'];
+  //     int productQuantity = product['product_quantity'];
+
+  //     totalPrice += (productPrice * productQuantity);
+  //   }
+  //   setState(() {
+  //     totalAmount = totalPrice;
+  //   });
+  // }
+
+  int noOfCartItems = 0;
+  int couponAmount = 0;
+  double subTotal = 0;
+  double deliveryFee = 5;
+  double discountPercentage = 0.25; // 25% discount
+  double discountAmount = 0;
+
+  void calculateTotalPrice() {
+    for (var product in cartProduct) {
+      double productPrice = product['product_price'];
+      int productQuantity = product['product_quantity'];
+      noOfCartItems = int.parse(cartProduct.length.toString());
+
+      subTotal += (productPrice * productQuantity);
+    }
+
+    double discountAmount = subTotal * discountPercentage;
+
+    // Apply coupon logic if needed
+    // double couponAmount = ... calculate coupon amount based on coupon code ...
+
+    double totalBeforeCoupon = subTotal + deliveryFee - discountAmount;
+
+    double grandTotal = totalBeforeCoupon - couponAmount;
+
+    setState(() {
+      String roundedValue = grandTotal.toStringAsFixed(2);
+      totalAmount = double.parse(roundedValue);
+    });
+  }
+
   @override
-  initState() {
+  void initState() {
     super.initState();
-    fetchCartProducts();
+    fetchCartProducts().then((products) {
+      setState(() {
+        cartProduct = products;
+        calculateTotalPrice();
+        print("no of cart items : $noOfCartItems");
+        print("subtotal price : $subTotal");
+        print("delivery fee : $deliveryFee");
+        print("discount percentage : $discountPercentage");
+        print("coupon amount : $couponAmount");
+        print("total price : $totalAmount");
+      });
+    });
+  }
+
+  void increaseQuantity(int index) {
+    setState(() {
+      cartProduct[index]['quantity']++;
+      cartProduct[index]['price'] += cartProduct[index]['unitPrice'];
+    });
+  }
+
+  void decreaseQuantity(int index) {
+    if (cartProduct[index]['quantity'] > 1) {
+      setState(() {
+        cartProduct[index]['quantity']--;
+        cartProduct[index]['price'] -= cartProduct[index]['unitPrice'];
+      });
+    }
   }
 
   @override
@@ -89,25 +170,7 @@ class _CartPageState extends State<CartPage> {
                   });
                   return const Center(child: CircularProgressIndicator());
                 } else {
-                  return
-                      // ListView.builder(
-                      //   itemCount: snapshot.data!.length,
-                      //   itemBuilder: (context, index) {
-                      //     final product = snapshot.data![index];
-                      //     return ListTile(
-                      //       title: Text(product['product_name']),
-                      //       subtitle: Text('Price: \$${product['product_price']}'),
-                      //       leading: Image.asset(
-                      //         product['product_image'], // Display the product image
-                      //         fit: BoxFit.cover,
-                      //       ), // Display the product image
-
-                      //       // Add other fields as needed
-                      //     );
-                      //   },
-                      // );
-
-                      Column(
+                  return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
@@ -171,7 +234,7 @@ class _CartPageState extends State<CartPage> {
                                         ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(10),
-                                          child: Image.asset(
+                                          child: Image.network(
                                             product['product_image'],
                                             fit: BoxFit.cover,
                                           ),
@@ -223,9 +286,10 @@ class _CartPageState extends State<CartPage> {
                                                     children: [
                                                       GestureDetector(
                                                         onTap: () {
-                                                          value
-                                                              .decreaseQuantity(
-                                                                  index);
+                                                          setState(() {
+                                                            decreaseQuantity(
+                                                                index);
+                                                          });
                                                         },
                                                         child: Container(
                                                           decoration:
@@ -262,9 +326,10 @@ class _CartPageState extends State<CartPage> {
                                                       ),
                                                       GestureDetector(
                                                         onTap: () {
-                                                          value
-                                                              .increaseQuantity(
-                                                                  index);
+                                                          setState(() {
+                                                            increaseQuantity(
+                                                                index);
+                                                          });
                                                         },
                                                         child: Container(
                                                           decoration:
@@ -346,7 +411,8 @@ class _CartPageState extends State<CartPage> {
                         ),
                       ),
                       Visibility(
-                        visible: GetStorage().read('cartItems') != null,
+                        visible:
+                            snapshot.connectionState != ConnectionState.waiting,
                         child: SizedBox(
                           child: Column(
                             children: [
@@ -411,20 +477,14 @@ class _CartPageState extends State<CartPage> {
                                             color: Colors.black,
                                           ),
                                         ),
-                                        Consumer<CartModel>(
-                                          builder: (context, value, child) {
-                                            double subTotal = double.parse(
-                                                value.calculateSubTotalPrice());
-                                            return Text(
-                                              '\$ $subTotal',
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black,
-                                              ),
-                                            );
-                                          },
-                                        ),
+                                        Text(
+                                          '\$ $subTotal',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black,
+                                          ),
+                                        )
                                       ],
                                     ),
                                     const SizedBox(height: 10),
@@ -479,107 +539,71 @@ class _CartPageState extends State<CartPage> {
                               const SizedBox(
                                 height: 16.0,
                               ),
-                              Consumer<CartModel>(
-                                builder: (context, value, child) {
-                                  double totalAmount =
-                                      double.parse(value.calculateTotal());
-                                  return Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'Total:',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        '\$ $totalAmount',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
+                              // Consumer<CartModel>(
+                              //   builder: (context, value, child) {
+                              //     double totalAmount =
+                              //         double.parse(value.calculateTotal());
+                              //     return
+                              //   },
+                              // ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Total:',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Text(
+                                    '\$ $totalAmount',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(
                                 height: 16.0,
                               ),
-                              Consumer<CartModel>(
-                                  builder: (context, value, child) {
-                                double totalAmount =
-                                    double.parse(value.calculateTotal());
-                                return SizedBox(
-                                  width: width_,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      // Handle checkout button press
-
-                                      // continueCart().then((value) {
-                                      //   if (value) {
-                                      //     Get.to(() => const CheckOut());
-                                      //   }
-                                      // });
-
-                                      //
-
-                                      Get.to(() => const CheckOut());
-
-                                      // var regBody = CartDetailModel(
-                                      //     productName:
-                                      //         CartModel().cartItems.productName,
-                                      //     productType:
-                                      //         CartModel().cartItems.productType,
-                                      //     productPrice:
-                                      //         CartModel().cartItems.productPrice,
-                                      //     productQuantity:
-                                      //         CartModel().cartItems.productQuantity,
-                                      //     totalPrice:
-                                      //         CartModel().cartItems.totalPrice);
-
-                                      // print(regBody.toJson());
-
-                                      // var response = http.post(
-                                      //   Uri.parse(
-                                      //       'http://190.190.15.106:3000/user/getCartProducts'),
-                                      //   headers: <String, String>{
-                                      //     'Content-Type':
-                                      //         'application/json; charset=UTF-8',
-                                      //   },
-                                      //   body: jsonEncode(regBody.toJson()),
-                                      // );
-                                      // print('response $response');
-
-                                      // ],
-
-                                      //
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 30,
-                                        vertical: 15,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
+                              SizedBox(
+                                width: width_,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Get.to(() => const CheckOut());
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 30,
+                                      vertical: 15,
                                     ),
-                                    child: Text(
-                                      'Continue to Checkout \$$totalAmount',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                );
-                              }),
+                                  child: Text(
+                                    'Continue to Checkout \$$totalAmount',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Consumer<CartModel>(
+                              //     builder: (context, value, child) {
+                              //   double totalAmount =
+                              //       double.parse(value.calculateTotal());
+                              //   return
+                              //   ;
+                              // }),
                             ],
                           ),
                         ),

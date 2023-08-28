@@ -1,20 +1,19 @@
 import 'dart:math';
 
-import 'package:vender/config.dart';
-import 'package:vender/screens/login.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:vender/user/screen/login.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+class SignupUserScreen extends StatefulWidget {
+  const SignupUserScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<SignupUserScreen> createState() => _SignupUserScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupUserScreenState extends State<SignupUserScreen> {
   final _formKey = GlobalKey<FormState>();
   final String _name = '';
   //
@@ -38,7 +37,7 @@ class _SignupScreenState extends State<SignupScreen> {
       var body = jsonEncode(regBody);
       print(body);
       var response = await http.post(
-          Uri.parse("http://190.190.2.226:3000/admin/register"),
+          Uri.parse("http://190.190.2.226:3000/User/registration"),
           headers: {"Content-Type": "application/json"},
           body: body);
       print("hellloo");
@@ -53,7 +52,7 @@ class _SignupScreenState extends State<SignupScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const LoginScreen(),
+            builder: (context) => const LoginUserScreen(),
           ),
         );
         return true;
@@ -306,7 +305,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                 if (_formKey.currentState!.validate()) {
                                   // Form is valid, process the data
                                   // For example, save it to a database
-                                  print('Name: $registration');
                                   // registerUser();
                                   await registerUser();
                                   // signUp(context);

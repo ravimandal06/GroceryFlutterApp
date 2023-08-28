@@ -10,12 +10,13 @@ GetProduct getProductFromJson(String str) =>
 String getProductToJson(GetProduct data) => json.encode(data.toJson());
 
 class GetProduct {
-  String productType;
-  String productName;
-  String productPrice;
-  int productStock;
-  String productImage;
-  int productOfferPrice;
+  final String productType;
+  final String productName;
+  final String productPrice;
+  final int productStock;
+  final String productImage;
+  final int productQuantity;
+  final int productOfferPrice;
 
   GetProduct({
     required this.productType,
@@ -23,16 +24,19 @@ class GetProduct {
     required this.productPrice,
     required this.productStock,
     required this.productImage,
+    required this.productQuantity,
     required this.productOfferPrice,
   });
 
   factory GetProduct.fromJson(Map<String, dynamic> json) => GetProduct(
-        productType: json["productType"],
-        productName: json["productName"],
-        productPrice: json["productPrice"],
-        productStock: json["productStock"],
-        productImage: json["productImage"],
-        productOfferPrice: json["productOfferPrice"],
+        productType:
+            json["productType"] ?? "", // Default to an empty string if null
+        productName: json["productName"] ?? "",
+        productPrice: json["productPrice"] ?? 0,
+        productStock: json["productStock"] ?? 0, // Default to 0 if null
+        productImage: json["productImage"] ?? "",
+        productQuantity: json["productQuantity"] ?? 0,
+        productOfferPrice: json["productOfferPrice"] ?? 0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -41,6 +45,7 @@ class GetProduct {
         "productPrice": productPrice,
         "productStock": productStock,
         "productImage": productImage,
+        "productQuantity": productQuantity,
         "productOfferPrice": productOfferPrice,
       };
 }

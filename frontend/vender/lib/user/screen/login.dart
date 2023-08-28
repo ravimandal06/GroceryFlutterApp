@@ -3,26 +3,25 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vender/config.dart';
-import 'package:vender/homeNav.dart';
-import 'package:vender/screens/add_product.dart';
-import 'package:vender/screens/signup.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:vender/user/screen/homePage.dart';
+import 'package:vender/user/screen/signup.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class LoginUserScreen extends StatefulWidget {
+  const LoginUserScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginUserScreen> createState() => _LoginUserScreenState();
 }
 
 //
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginUserScreenState extends State<LoginUserScreen> {
   final _formKey = GlobalKey<FormState>();
   final String _name = '';
   bool isNotValidate_ = false;
@@ -45,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
         "password": passwordController.text,
       };
       var response = await http.post(
-          Uri.parse("http://190.190.2.226:3000/admin/login"),
+          Uri.parse("http://190.190.2.226:3000/User/login"),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(regBody));
 
@@ -59,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomeNav(),
+            builder: (context) => const UserDashboard(),
           ),
         );
         return true;
@@ -93,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const AddProduct(),
+          builder: (context) => const UserDashboard(),
         ),
       );
     } on FirebaseAuthException catch (e) {
@@ -224,7 +223,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   // Form is valid, process the data
                                   // For example, save it to a database
                                   print('Name: $_name');
-                                  print('Email: $registration');
                                   await loginUser();
                                   // signIn(context);
                                 }
@@ -354,7 +352,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const SignupScreen(),
+                                  builder: (context) =>
+                                      const SignupUserScreen(),
                                 ),
                               );
                             },

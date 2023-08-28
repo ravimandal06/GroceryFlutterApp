@@ -67,7 +67,6 @@ const getProduct = async (req, res) => {
       products: products,
       message: "All products retrieved successfully",
     });
-    
   } catch (err) {
     console.log("Error:", err);
     return res.status(500).json(err);
@@ -94,6 +93,10 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-
-module.exports = { registerAdmin, loginAdmin, addProduct, getProduct, deleteProduct };
-
+module.exports = {
+  registerAdmin,
+  loginAdmin,
+  addProduct,
+  getProduct,
+  deleteProduct,
+};

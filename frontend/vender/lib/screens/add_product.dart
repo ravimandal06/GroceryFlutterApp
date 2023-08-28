@@ -25,6 +25,7 @@ class AddProduct extends StatefulWidget {
 class _AddProductState extends State<AddProduct> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController categoriesController = TextEditingController();
+  final TextEditingController shopLocationController = TextEditingController();
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
   final TextEditingController productPriceController = TextEditingController();
@@ -170,9 +171,10 @@ class _AddProductState extends State<AddProduct> {
           productType: categoriesController.text,
           productName: productNameController.text,
           productPrice: productPriceController.text,
-          productStock: stockController.text,
+          productStock: int.parse(stockController.text),
           productImage: uploadedImageUrl ?? 'empty',
-          productOfferPrice: offerPriceController.text,
+          productOfferPrice: int.parse(offerPriceController.text),
+          shopLocation: shopLocationController.text,
         );
 
         var response = await http.post(
@@ -191,6 +193,7 @@ class _AddProductState extends State<AddProduct> {
           stockController.clear();
           productPriceController.clear();
           offerPriceController.clear();
+          shopLocationController.clear();
 
           print('traveling route');
 
@@ -332,6 +335,7 @@ class _AddProductState extends State<AddProduct> {
                   onChanged: (value) {
                     setState(() {
                       // _name = value;
+                      _uploadImage();
                     });
                   },
                 ),
@@ -488,6 +492,37 @@ class _AddProductState extends State<AddProduct> {
                     });
                   },
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+
+                TextFormField(
+                  controller: shopLocationController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    labelText: 'Shop Location',
+                    hintText: 'Enter your shop location',
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.black,
+                        width: 2.0,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Enter shop location';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      // _name = value;
+                    });
+                  },
+                ),
 
                 const SizedBox(height: 50.0),
                 SizedBox(
@@ -496,13 +531,9 @@ class _AddProductState extends State<AddProduct> {
                   child: FilledButton.tonal(
                     onPressed: () {
                       setState(() {
-                        addProductList();
                         if (_formKey.currentState!.validate()) {
-                          // Form is valid, process the data
-                          // For example, save it to a database
-                          // print('Name: ');
-
-                          _uploadImage();
+                          // _uploadImage();
+                          addProductList();
                         }
                       });
                     },
