@@ -6,7 +6,6 @@ class AddProductRequest {
   final int productStock;
   final String productImage;
   final int productOfferPrice;
-  final String shopLocation;
 
   AddProductRequest({
     required this.userId,
@@ -16,7 +15,6 @@ class AddProductRequest {
     required this.productStock,
     required this.productImage,
     required this.productOfferPrice,
-    required this.shopLocation,
   });
 
   Map<String, dynamic> toJson() {
@@ -28,7 +26,6 @@ class AddProductRequest {
       'productStock': productStock,
       'productImage': productImage,
       'productOfferPrice': productOfferPrice,
-      'shopLocation': shopLocation,
     };
   }
 }

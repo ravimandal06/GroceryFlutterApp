@@ -17,6 +17,12 @@ class GetProduct {
   final String productImage;
   final int productQuantity;
   final int productOfferPrice;
+  final String shopName;
+
+  final String city;
+  final String state;
+  final String landmark;
+  final String pincode;
 
   GetProduct({
     required this.productType,
@@ -26,6 +32,11 @@ class GetProduct {
     required this.productImage,
     required this.productQuantity,
     required this.productOfferPrice,
+    required this.shopName,
+    required this.city,
+    required this.state,
+    required this.landmark,
+    required this.pincode,
   });
 
   factory GetProduct.fromJson(Map<String, dynamic> json) => GetProduct(
@@ -37,6 +48,11 @@ class GetProduct {
         productImage: json["productImage"] ?? "",
         productQuantity: json["productQuantity"] ?? 0,
         productOfferPrice: json["productOfferPrice"] ?? 0,
+        shopName: json["shopName"] ?? "",
+        city: json["city"] ?? "",
+        state: json["state"] ?? "",
+        landmark: json["landmark"] ?? "",
+        pincode: json["pincode"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -47,5 +63,10 @@ class GetProduct {
         "productImage": productImage,
         "productQuantity": productQuantity,
         "productOfferPrice": productOfferPrice,
+        "shopName": shopName,
+        "city": city,
+        "state": state,
+        "landmark": landmark,
+        "pincode": pincode,
       };
 }

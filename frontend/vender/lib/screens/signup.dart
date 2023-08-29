@@ -1,11 +1,17 @@
 import 'dart:math';
 
+import 'package:get_storage/get_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:vender/config.dart';
 import 'package:vender/screens/login.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
+import '../controller/shopManager.dart';
+import '../controller/shopProvider.dart';
+import '../model/shopDetails.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -22,6 +28,12 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController shopNameController = TextEditingController();
+  final TextEditingController shopNumberController = TextEditingController();
+  final TextEditingController landmarkController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController stateController = TextEditingController();
+  final TextEditingController pincodeController = TextEditingController();
 
   bool isNotValidate_ = false;
 
@@ -34,6 +46,12 @@ class _SignupScreenState extends State<SignupScreen> {
         "password": passwordController.text,
         "name": nameController.text,
         "phoneNumber": phoneNumberController.text,
+        "shopName": shopNameController.text,
+        "shopNumber": shopNumberController.text,
+        "landmark": landmarkController.text,
+        "city": cityController.text,
+        "state": stateController.text,
+        "pincode": pincodeController.text,
       };
       var body = jsonEncode(regBody);
       print(body);
@@ -50,6 +68,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (jsonResponse['status']) {
         print("success");
+        // var shopProvider = Provider.of<ShopProvider>(context, listen: false);
+        // shopProvider.setShopDetails(ShopDetails(shopNameController.text));
+        ShopManager().setShopDetails(ShopDetails(shopNameController.text));
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -297,6 +318,180 @@ class _SignupScreenState extends State<SignupScreen> {
                           const SizedBox(
                             height: 10,
                           ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: shopNameController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Shop Name',
+                              hintText: 'Enter your Shop Name',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your Shop Name';
+                              }
+                              return null;
+                            },
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     // _name = value;
+                            //     phoneNumberController.text = value;
+                            //   });
+                            // },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: shopNumberController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Shop Number',
+                              hintText: 'Enter your Shop Number',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your Shop Number';
+                              }
+                              return null;
+                            },
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     // _name = value;
+                            //     phoneNumberController.text = value;
+                            //   });
+                            // },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: landmarkController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Landmark',
+                              hintText: 'Enter your Landmark',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your Landmark';
+                              }
+                              return null;
+                            },
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     // _name = value;
+                            //     phoneNumberController.text = value;
+                            //   });
+                            // },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: cityController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'City',
+                              hintText: 'Enter your City',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your City';
+                              }
+                              return null;
+                            },
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     // _name = value;
+                            //     phoneNumberController.text = value;
+                            //   });
+                            // },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: stateController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'State',
+                              hintText: 'Enter your State',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your State';
+                              }
+                              return null;
+                            },
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     // _name = value;
+                            //     phoneNumberController.text = value;
+                            //   });
+                            // },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: pincodeController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Pincode',
+                              hintText: 'Enter your Pincode',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your Pincode';
+                              }
+                              return null;
+                            },
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     // _name = value;
+                            //     phoneNumberController.text = value;
+                            //   });
+                            // },
+                          ),
                           const SizedBox(height: 16.0),
                           SizedBox(
                             width: 600,
@@ -308,6 +503,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   // For example, save it to a database
                                   print('Name: $registration');
                                   // registerUser();
+                                  GetStorage().write(
+                                      'shopName', shopNameController.text);
                                   await registerUser();
                                   // signUp(context);
                                 }

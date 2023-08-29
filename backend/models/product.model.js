@@ -32,11 +32,10 @@ const productSchema = new Schema(
       type: Number,
       //   required: [false, "optional"],
     },
-
-    shopLocation: {
-      type: String,
-      required: [true, "shopLocation is required"],
-    },
+    // user_city: {
+    //   type: String,
+    //   required: [true, "user_city is required"],
+    // },
   },
   { timestamps: true }
 );

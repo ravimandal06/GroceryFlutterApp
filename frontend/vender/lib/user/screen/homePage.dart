@@ -411,14 +411,32 @@ class _UserDashboardState extends State<UserDashboard> {
                                                   color: Color(0xff0C1A30),
                                                 ),
                                               ),
-                                              Text(
-                                                snapshot
-                                                    .data![index].productName,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Color(0xff0C1A30),
-                                                ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    snapshot.data![index]
+                                                        .productName,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Color(0xff0C1A30),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    snapshot
+                                                        .data![index].shopName,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Color(0xff0C1A30),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                               SizedBox(
                                                 width: 130,
@@ -478,8 +496,8 @@ class _UserDashboardState extends State<UserDashboard> {
                                                         });
                                                       },
                                                       child: Container(
-                                                        width: 40,
-                                                        height: 40,
+                                                        width: 7,
+                                                        height: 7,
                                                         decoration:
                                                             BoxDecoration(
                                                           borderRadius:
@@ -488,10 +506,10 @@ class _UserDashboardState extends State<UserDashboard> {
                                                           color: const Color(
                                                               0xff0C1A30),
                                                         ),
-                                                        child: const Icon(
-                                                          Icons.add,
-                                                          color: Colors.white,
-                                                        ),
+                                                        // child: const Icon(
+                                                        //   Icons.add,
+                                                        //   color: Colors.white,
+                                                        // ),
                                                       ),
                                                     ),
                                                   ],
