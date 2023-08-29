@@ -29,9 +29,29 @@ const adminSchema = new mongoose.Schema(
     products: {
       type: ["String"],
     },
-    address: {
+    shopName:{
+      type: String,
+      required: [true, "shopName is required"],
+    },
+    shopno: {
       type: String,
     },
+    landmark: {
+      type: String,
+      required: [true, "landmark is required"],
+    },
+    city:{
+      type: String,
+      required: [true, "city is required"],
+    },
+    state:{
+      type: String,
+      required: [true, "state is required"],
+    },
+    pincode:{
+      type: String,
+      required: [true, "pincode is required"],
+    }
   },
   { timestamps: true }
 );
