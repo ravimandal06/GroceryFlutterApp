@@ -43,7 +43,21 @@ const addProduct = async (req, res) => {
   try {
     console.log("Adding new product route");
     console.log(req.body);
+
+    const adminId = req.params.adminId;
+    let adminDetails = await adminModel.findById(adminId);
+    if(adminDetails === null)
+    {
+      return res.status(401).json({ status: false, error: "Invalid Admin" });
+    }
+    req.body["city"] = adminDetails.city;
+    req.body["shopName"] = adminDetails.shopName;
+    req.body["adminId"] = adminId;
     var newProduct = await productModel.create(req.body);
+    //adding the new product into the list of products sold by the admin
+    adminDetails.products.push(newProduct._id);
+    await adminDetails.save();
+
     console.log(newProduct);
     return res.json({
       status: true,
@@ -57,10 +71,11 @@ const addProduct = async (req, res) => {
   }
 };
 
-const getProduct = async (req, res) => {
+const getProducts = async (req, res) => {
   try {
-    console.log("Get all products route");
-    const products = await productModel.find(); // Retrieve all products
+    const city = req.params.city;
+    console.log("Get all products in the city ---> ",city);
+    const products = await productModel.find({city:city}); // Retrieve all products
     console.log(products);
     return res.json({
       status: true,
@@ -97,6 +112,6 @@ module.exports = {
   registerAdmin,
   loginAdmin,
   addProduct,
-  getProduct,
+  getProducts,
   deleteProduct,
 };
