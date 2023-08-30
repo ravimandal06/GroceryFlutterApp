@@ -10,7 +10,6 @@ exports.addProduct = async (req, res, next) => {
       productStock,
       productImage,
       productOfferPrice,
-      shopLocation,
     } = req.body;
     let productData = await productService.addProduct(
       productType,
@@ -18,8 +17,7 @@ exports.addProduct = async (req, res, next) => {
       productPrice,
       productStock,
       productImage,
-      productOfferPrice,
-      shopLocation
+      productOfferPrice
     );
     console.log("---> productData -->", productData);
     res.json({ status: true, success: productData });

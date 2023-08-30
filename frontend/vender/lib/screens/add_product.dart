@@ -3,13 +3,18 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
+import '../controller/shopManager.dart';
 import '../model/addProductRequest.dart';
 import '../services/addProductResponse.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
+import '../user/model/cart_model.dart';
 
 class AddProduct extends StatefulWidget {
   const AddProduct({Key? key, this.token})
@@ -25,13 +30,29 @@ class AddProduct extends StatefulWidget {
 class _AddProductState extends State<AddProduct> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController categoriesController = TextEditingController();
-  final TextEditingController shopLocationController = TextEditingController();
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
   final TextEditingController productPriceController = TextEditingController();
   final TextEditingController offerPriceController = TextEditingController();
   late String userId;
   List? items;
+  // final UserAuthData shopDetails = UserAuthData(
+  //   type: '',
+  //   id: '',
+  //   name: '',
+  //   email: '',
+  //   password: '',
+  //   address: '',
+  //   phoneNumber: '',
+  //   shopName: ,
+  //   shopno: '',
+  //   landmark: '',
+  //   city: '',
+  //   state: '',
+  //   pincode: '',
+  // );
+
+  String shopName = '${GetStorage().read('shopName')}';
 
   @override
   void initState() {
@@ -40,6 +61,8 @@ class _AddProductState extends State<AddProduct> {
     // Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
     // userId = jwtDecodedToken['userId'];
     // print(userId);
+    // shopName;
+    // print("shopName ----> ${shopDetails!.shopName}");
   }
 
   // void addProductList() async {
@@ -160,6 +183,8 @@ class _AddProductState extends State<AddProduct> {
     });
   }
 
+  var shopDetails = ShopManager().shopDetails;
+
   void addProductList() async {
     try {
       if (productNameController.text.isNotEmpty &&
@@ -174,7 +199,6 @@ class _AddProductState extends State<AddProduct> {
           productStock: int.parse(stockController.text),
           productImage: uploadedImageUrl ?? 'empty',
           productOfferPrice: int.parse(offerPriceController.text),
-          shopLocation: shopLocationController.text,
         );
 
         var response = await http.post(
@@ -193,7 +217,6 @@ class _AddProductState extends State<AddProduct> {
           stockController.clear();
           productPriceController.clear();
           offerPriceController.clear();
-          shopLocationController.clear();
 
           print('traveling route');
 
@@ -492,37 +515,6 @@ class _AddProductState extends State<AddProduct> {
                     });
                   },
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-
-                TextFormField(
-                  controller: shopLocationController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    labelText: 'Shop Location',
-                    hintText: 'Enter your shop location',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.black,
-                        width: 2.0,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Enter shop location';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      // _name = value;
-                    });
-                  },
-                ),
 
                 const SizedBox(height: 50.0),
                 SizedBox(
@@ -533,6 +525,7 @@ class _AddProductState extends State<AddProduct> {
                       setState(() {
                         if (_formKey.currentState!.validate()) {
                           // _uploadImage();
+
                           addProductList();
                         }
                       });

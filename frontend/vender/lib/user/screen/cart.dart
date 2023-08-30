@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:vender/user/screen/emptyCart.dart';
 import 'package:vender/user/widget/warningDailog.dart';
 
+import '../../constant.dart';
+
 // import '../model/cartModel.dart';
 
 class CartPage extends StatefulWidget {
@@ -23,7 +25,7 @@ class _CartPageState extends State<CartPage> {
   double totalAmount = 0; // Initialize totalAmount to 0
   Future<List<dynamic>> fetchCartProducts() async {
     final response = await http.get(Uri.parse(
-        'http://190.190.2.226:3000/Cart/getUserCartList/64afa968935c3ce30d04076f'));
+        'http://192.168.137.1:3000/Cart/getUserCartList/64afa968935c3ce30d04076f'));
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
@@ -54,7 +56,7 @@ class _CartPageState extends State<CartPage> {
   Future<void> deleteCartItem(String productId) async {
     const userId = '64afa968935c3ce30d04076f'; // Replace with actual user ID
     final response = await http.delete(
-      Uri.parse('http://190.190.2.226:3000/Cart/deleteCart/$userId/$productId'),
+      Uri.parse('http://192.168.137.1:3000/Cart/deleteCart/$userId/$productId'),
     );
 
     if (response.statusCode == 200) {
@@ -69,7 +71,7 @@ class _CartPageState extends State<CartPage> {
 
   Future<void> checkOutItem(String city) async {
     final response = await http.delete(
-      Uri.parse('http://190.190.2.226:3000/admin/getProduct/$city'),
+      Uri.parse('http://192.168.137.1:3000/admin/getProduct/$city'),
     );
 
     if (response.statusCode == 200) {
@@ -162,6 +164,7 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     final width_ = MediaQuery.of(context).size.width * 360;
+    final cartProvider = Provider.of<CartModel>(context);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -590,6 +593,11 @@ class _CartPageState extends State<CartPage> {
                                 width: width_,
                                 child: ElevatedButton(
                                   onPressed: () {
+                                    setState(() {
+                                      checkOutItem(cartProvider.userCity);
+                                      print(
+                                          "userCity ----> ${cartProvider.userCity}");
+                                    });
                                     Get.to(() => const CheckOut());
                                   },
                                   style: ElevatedButton.styleFrom(

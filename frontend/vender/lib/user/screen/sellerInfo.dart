@@ -28,7 +28,7 @@ class _SellerInfoPageState extends State<SellerInfoPage> {
 
   Future<List<GetProduct>> _getProducts() async {
     final response =
-        await http.get(Uri.parse('http://190.190.2.226:3000/admin/getProduct'));
+        await http.get(Uri.parse('http://192.168.137.1:3000/admin/getProduct'));
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return List<GetProduct>.from(

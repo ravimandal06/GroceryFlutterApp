@@ -1,15 +1,15 @@
 // To parse this JSON data, do
 //
-//     final userAuthData = userAuthDataFromJson(jsonString);
+//     final AdminAuthData = AdminAuthDataFromJson(jsonString);
 
 import 'dart:convert';
 
-UserAuthData userAuthDataFromJson(String str) =>
-    UserAuthData.fromJson(json.decode(str));
+AdminAuthData adminAuthDataFromJson(String str) =>
+    AdminAuthData.fromJson(json.decode(str));
 
-String userAuthDataToJson(UserAuthData data) => json.encode(data.toJson());
+String adminAuthDataToJson(AdminAuthData data) => json.encode(data.toJson());
 
-class UserAuthData {
+class AdminAuthData {
   String type;
   String id;
   String name;
@@ -17,8 +17,14 @@ class UserAuthData {
   String password;
   String address;
   String phoneNumber;
+  String shopName;
+  String shopno;
+  String landmark;
+  String city;
+  String state;
+  String pincode;
 
-  UserAuthData({
+  AdminAuthData({
     required this.type,
     required this.id,
     required this.name,
@@ -26,9 +32,15 @@ class UserAuthData {
     required this.password,
     required this.address,
     required this.phoneNumber,
+    required this.shopName,
+    required this.shopno,
+    required this.landmark,
+    required this.city,
+    required this.state,
+    required this.pincode,
   });
 
-  factory UserAuthData.fromJson(Map<String, dynamic> json) => UserAuthData(
+  factory AdminAuthData.fromJson(Map<String, dynamic> json) => AdminAuthData(
         type: json["type"],
         id: json["id"],
         name: json["name"],
@@ -36,6 +48,12 @@ class UserAuthData {
         password: json["password"],
         address: json["address"],
         phoneNumber: json["phoneNumber"],
+        shopName: json["shopName"],
+        shopno: json["shopno"],
+        landmark: json["landmark"],
+        city: json["city"],
+        state: json["state"],
+        pincode: json["pincode"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,5 +64,11 @@ class UserAuthData {
         "password": password,
         "address": address,
         "phoneNumber": phoneNumber,
+        "shopName": shopName,
+        "shopno": shopno,
+        "landmark": landmark,
+        "city": city,
+        "state": state,
+        "pincode": pincode,
       };
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:vender/constant.dart';
+import 'package:vender/user/controller/userManager.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/model/globalProducts.dart';
 import 'package:vender/user/model/products.dart';
@@ -33,7 +34,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   Future<List<GetProduct>> _getProducts() async {
     final response =
-        await http.get(Uri.parse('http://190.190.2.226:3000/admin/getProduct'));
+        await http.get(Uri.parse('http://192.168.137.1:3000/admin/getProduct'));
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return List<GetProduct>.from(
@@ -128,9 +129,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 
   //
+
+  ////
+  ///
+  ///
+  ///
+
   Future<void> postData() async {
     const String url =
-        'http://190.190.2.226:3000/Cart/addToCart'; // Replace with your actual API endpoint
+        'http://192.168.137.1:3000/Cart/addToCart'; // Replace with your actual API endpoint
 
     Map<String, dynamic> data = {
       "userId": "64afa968935c3ce30d04076f",
@@ -163,6 +170,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    var userDetails = UserManager().userDetails;
     return Scaffold(
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -196,7 +204,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       top: 80,
                       left: 60,
                       child: Image.network(
-                        "${widget.product.productImage}",
+                        widget.product.productImage,
                         height: 200,
                         width: 200,
                       ),
@@ -770,7 +778,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               ),
                             ),
                             TextSpan(
-                              text: "${widget.product.productPrice}",
+                              text: widget.product.productPrice,
                               style: const TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600,
@@ -790,6 +798,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         child: ElevatedButton(
                           onPressed: () {
                             //
+                            // if (userDetails != null) {
+                            //   storeDetail(userDetails.city);
+                            // }
                             postData();
                           },
                           style: ElevatedButton.styleFrom(

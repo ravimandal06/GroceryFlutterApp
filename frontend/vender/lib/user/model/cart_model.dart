@@ -2,7 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:vender/user/model/products.dart';
 
+import '../../model/shopDetails.dart';
+
 class CartModel extends ChangeNotifier {
+//
+
+  ShopDetails? _shopDetails;
+
+  ShopDetails? get shopDetails => _shopDetails;
+
+  void setShopDetails(ShopDetails details) {
+    _shopDetails = details;
+    notifyListeners();
+  }
+
+  ///
+  ///
+  ///
+  String userCity = ''; // Variable to store the message
+
+  void storeDetail(String city) {
+    userCity = city ?? 'empty'; // Storing a message on button tap
+    print("user city --------->> $userCity");
+  }
+
+  ///
+  ///
+//
+//
   final List<GetProductRequest> productList_ = [
     GetProductRequest(
       userId: "64afa968935c3ce30d04076f",

@@ -37,14 +37,14 @@ const productSchema = new Schema(
       type: String,
       required: [true, "shopLocation is required"],
     },
-    city:{
+    city: {
       type: String,
       required: [true, "city is required"],
     },
-    adminId:{
+    adminId: {
       type: String,
       required: [true, "adminId is required"],
-    }
+    },
   },
   { timestamps: true }
 );

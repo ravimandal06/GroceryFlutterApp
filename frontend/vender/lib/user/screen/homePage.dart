@@ -22,12 +22,12 @@ class _UserDashboardState extends State<UserDashboard> {
   @override
   void initState() {
     super.initState();
-    _products = _getProducts();
+    _products = _getProducts('tirupati');
   }
 
-  Future<List<GetProduct>> _getProducts() async {
-    final response =
-        await http.get(Uri.parse('http://190.190.2.226:3000/admin/getProduct'));
+  Future<List<GetProduct>> _getProducts(String city) async {
+    final response = await http
+        .get(Uri.parse('http://192.168.137.1:3000/admin/getProduct/$city'));
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       print("response status : ${response.statusCode}");
@@ -411,14 +411,32 @@ class _UserDashboardState extends State<UserDashboard> {
                                                   color: Color(0xff0C1A30),
                                                 ),
                                               ),
-                                              Text(
-                                                snapshot
-                                                    .data![index].productName,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Color(0xff0C1A30),
-                                                ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    snapshot.data![index]
+                                                        .productName,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Color(0xff0C1A30),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    snapshot
+                                                        .data![index].shopName,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Color(0xff0C1A30),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                               SizedBox(
                                                 width: 130,
@@ -478,8 +496,8 @@ class _UserDashboardState extends State<UserDashboard> {
                                                         });
                                                       },
                                                       child: Container(
-                                                        width: 40,
-                                                        height: 40,
+                                                        width: 7,
+                                                        height: 7,
                                                         decoration:
                                                             BoxDecoration(
                                                           borderRadius:
@@ -488,10 +506,10 @@ class _UserDashboardState extends State<UserDashboard> {
                                                           color: const Color(
                                                               0xff0C1A30),
                                                         ),
-                                                        child: const Icon(
-                                                          Icons.add,
-                                                          color: Colors.white,
-                                                        ),
+                                                        // child: const Icon(
+                                                        //   Icons.add,
+                                                        //   color: Colors.white,
+                                                        // ),
                                                       ),
                                                     ),
                                                   ],

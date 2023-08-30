@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:vender/user/controller/userDetails.dart';
+import 'package:vender/user/controller/userManager.dart';
 import 'package:vender/user/screen/login.dart';
 
 class SignupUserScreen extends StatefulWidget {
@@ -21,6 +23,11 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController landmarkController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController stateController = TextEditingController();
+  final TextEditingController pincodeController = TextEditingController();
+  //
 
   bool isNotValidate_ = false;
 
@@ -33,11 +40,15 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
         "password": passwordController.text,
         "name": nameController.text,
         "phoneNumber": phoneNumberController.text,
+        "landmark": landmarkController.text,
+        "city": cityController.text,
+        "state": stateController.text,
+        "pincode": pincodeController.text,
       };
       var body = jsonEncode(regBody);
       print(body);
       var response = await http.post(
-          Uri.parse("http://190.190.2.226:3000/User/registration"),
+          Uri.parse("http://192.168.137.1:3000/User/registration"),
           headers: {"Content-Type": "application/json"},
           body: body);
       print("hellloo");
@@ -49,6 +60,7 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
 
       if (jsonResponse['status']) {
         print("success");
+        UserManager().setUserDetails(UserDetails(cityController.text));
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -67,65 +79,6 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
     }
     return false;
   }
-
-  // Future<void> signUp(BuildContext context) async {
-  //   try {
-  //     UserCredential userCredential =
-  //         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //       email: emailController.text,
-  //       password: passwordController.text,
-  //     );
-
-  //     // User registration successful
-  //     // You can navigate to another screen here
-  //     print('User registered: ${userCredential.user?.email}');
-  //     if (userCredential.user != null) {
-  //       await userCredential.user!.updateDisplayName(_name);
-  //       print("user exits");
-  //       sendDataToServer();
-  //       print("send data to server ${sendDataToServer()}");
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => const LoginScreen(),
-  //         ),
-  //       );
-  //     }
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'weak-password') {
-  //       print('The password provided is too weak.');
-  //     } else if (e.code == 'email-already-in-use') {
-  //       print('The account already exists for that email.');
-  //     }
-  //     // Handle other exceptions here
-  //   }
-  // }
-
-  // //////////// send data to backend ////////////
-
-  // sendDataToServer() async {
-  //   // Create a NameEmailModel instance with the entered data
-  //   UserAuthData data = UserAuthData(
-  //       name: nameController.text,
-  //       email: emailController.text,
-  //       address: '',
-  //       id: "${FirebaseAuth.instance.currentUser?.uid}",
-  //       password: passwordController.text,
-  //       phoneNumber: phoneNumberController.text,
-  //       type: '');
-
-  //   // Convert the data to JSON
-  //   String jsonData = jsonEncode(data);
-
-  //   // Specify the endpoint where you want to send the data
-  //   String endpoint = '/signup'; // Replace with your actual endpoint
-
-  //   // Send a POST request with the JSON data to the localhost
-
-  //   String response = await NetworkHandler.post(jsonData, endpoint);
-
-  //   print('Response: $response');
-  // }
 
   //////////// end of function //////////
 
@@ -295,6 +248,122 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
                           ),
                           const SizedBox(
                             height: 10,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: landmarkController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Landmark',
+                              hintText: 'Enter your Landmark',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your Landmark';
+                              }
+                              return null;
+                            },
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     // _name = value;
+                            //     phoneNumberController.text = value;
+                            //   });
+                            // },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: cityController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'City',
+                              hintText: 'Enter your City',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your City';
+                              }
+                              return null;
+                            },
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     // _name = value;
+                            //     phoneNumberController.text = value;
+                            //   });
+                            // },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: stateController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'State',
+                              hintText: 'Enter your State',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your State';
+                              }
+                              return null;
+                            },
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     // _name = value;
+                            //     phoneNumberController.text = value;
+                            //   });
+                            // },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: pincodeController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Pincode',
+                              hintText: 'Enter your Pincode',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your Pincode';
+                              }
+                              return null;
+                            },
+                            // onChanged: (value) {
+                            //   setState(() {
+                            //     // _name = value;
+                            //     phoneNumberController.text = value;
+                            //   });
+                            // },
                           ),
                           const SizedBox(height: 16.0),
                           SizedBox(

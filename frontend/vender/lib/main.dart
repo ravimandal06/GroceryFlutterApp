@@ -2,10 +2,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:vender/config.dart';
+import 'package:vender/screens/login.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/screen/homePage.dart';
+import 'package:vender/user/screen/signup.dart';
 
+import 'controller/shopProvider.dart';
 import 'screens/signup.dart';
+import 'user/screen/login.dart';
 
 void main() async {
   // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -41,13 +46,16 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home:
-            //     //  SellerInfoPage(),
-            // const UserDashboard(),
-            SignupScreen(),
-        // const ProductListPage(),
-        // ProductListScreen(),
-        // home:
-        // adminDashboard_,
+            // SellerInfoPage(),
+            // UserDashboard(),
+            // SignupScreen(),
+            // ProductListPage(),
+            // ProductListScreen(),
+            // adminDashboard_,
+            // SignupScreen(),
+            // LoginUserScreen(),
+            LoginUserScreen(),
+        // const SignupUserScreen(),
       ),
     );
   }
