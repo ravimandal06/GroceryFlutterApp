@@ -67,6 +67,21 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
+  Future<void> checkOutItem(String city) async {
+    final response = await http.delete(
+      Uri.parse('http://190.190.2.226:3000/admin/getProduct/$city'),
+    );
+
+    if (response.statusCode == 200) {
+      // Item deleted successfully
+      print('Item deleted successfully');
+      // You can update your UI here if needed
+    } else {
+      // Handle error
+      print('Failed to delete item: ${response.statusCode}');
+    }
+  }
+
   // void calculateTotalPrice() {
   //   double totalPrice = 0;
   //   for (var product in cartProduct) {
