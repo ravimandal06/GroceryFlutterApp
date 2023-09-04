@@ -21,7 +21,7 @@ const productSchema = new Schema(
       required: [true, "productStock is required"],
     },
     productPrice: {
-      type: String,
+      type: Number,
       required: [true, "productPrice is required"],
     },
     productImage: {

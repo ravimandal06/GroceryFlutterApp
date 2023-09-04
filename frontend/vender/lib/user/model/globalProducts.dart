@@ -12,7 +12,7 @@ String getProductToJson(GetProduct data) => json.encode(data.toJson());
 class GetProduct {
   final String productType;
   final String productName;
-  final String productPrice;
+  final int productPrice;
   final int productStock;
   final String productImage;
   final int productQuantity;

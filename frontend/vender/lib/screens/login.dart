@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
         "password": passwordController.text,
       };
       var response = await http.post(
-          Uri.parse("http://190.190.2.226:3000/admin/login"),
+          Uri.parse("http://10.10.10.205:3000/admin/login"),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(regBody));
 

@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vender/constant.dart';
 import 'package:vender/user/controller/userManager.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/model/globalProducts.dart';
 import 'package:vender/user/model/products.dart';
+import 'package:vender/user/screen/cart.dart';
 import 'package:vender/user/screen/sellerInfo.dart';
 import 'package:http/http.dart' as http;
 import 'reviewProduct.dart';
@@ -26,17 +28,32 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   Future<List<GetProduct>>? _products;
 
+  String userName = '';
+  String userCity = '';
+
+  Future<void> loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('name') ?? '';
+      userCity = prefs.getString('city') ?? '';
+      print("userName : $userName");
+      print("userCity : $userCity");
+      _products = _getProducts(userCity);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    _products = _getProducts();
+    loadUserName();
   }
 
-  Future<List<GetProduct>> _getProducts() async {
-    final response =
-        await http.get(Uri.parse('http://192.168.137.1:3000/admin/getProduct'));
+  Future<List<GetProduct>> _getProducts(String city) async {
+    final response = await http
+        .get(Uri.parse('http://localhost:3000/admin/getProduct/$city'));
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
+      print("response status : ${response.statusCode}");
       return List<GetProduct>.from(
           json['products'].map((e) => GetProduct.fromJson(e)));
     } else {
@@ -137,7 +154,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   Future<void> postData() async {
     const String url =
-        'http://192.168.137.1:3000/Cart/addToCart'; // Replace with your actual API endpoint
+        'http://192.168.10.6:3000/Cart/addToCart'; // Replace with your actual API endpoint
 
     Map<String, dynamic> data = {
       "userId": "64afa968935c3ce30d04076f",
@@ -160,7 +177,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
     if (response.statusCode == 200) {
       print("POST request successful");
-      print(response.body); // Response from the server
+      print(response.body);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const CartPage(),
+      ));
     } else {
       print("POST request failed with status: ${response.statusCode}");
     }
@@ -778,7 +798,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               ),
                             ),
                             TextSpan(
-                              text: widget.product.productPrice,
+                              text: '${widget.product.productPrice}',
                               style: const TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600,

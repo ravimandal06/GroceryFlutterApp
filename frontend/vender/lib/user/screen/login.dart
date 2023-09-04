@@ -37,6 +37,8 @@ class _LoginUserScreenState extends State<LoginUserScreen> {
     prefs = await SharedPreferences.getInstance();
   }
 
+  bool? isUserLogged;
+
   Future<bool> loginUser() async {
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       var regBody = {
@@ -44,7 +46,7 @@ class _LoginUserScreenState extends State<LoginUserScreen> {
         "password": passwordController.text,
       };
       var response = await http.post(
-          Uri.parse("http://192.168.137.1:3000/User/login"),
+          Uri.parse("http://localhost:3000/User/login"),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(regBody));
 
@@ -53,7 +55,18 @@ class _LoginUserScreenState extends State<LoginUserScreen> {
         var myToken = jsonResponse['token'];
         print("Login successfull");
         print(myToken);
+        print(jsonResponse['email']);
+        //print the user details
+        print(jsonResponse['name']);
+        setState(() {
+          isUserLogged = true;
+          GetStorage().write('isUserLogged', isUserLogged);
+          print("isUserLogged ---> ${GetStorage().read('isUserLogged')}");
+        });
+
+        //
         prefs.setString('token', myToken);
+
         GetStorage().write('token', myToken);
         Navigator.pushReplacement(
           context,
@@ -65,6 +78,11 @@ class _LoginUserScreenState extends State<LoginUserScreen> {
       } else {
         print("something went wrong");
         print(jsonResponse['message']);
+        setState(() {
+          isUserLogged = false;
+          GetStorage().write('isUserLogged', isUserLogged);
+          print("isUserLogged ---> ${GetStorage().read('isUserLogged')}");
+        });
         return false;
       }
     } else {
@@ -75,36 +93,36 @@ class _LoginUserScreenState extends State<LoginUserScreen> {
     return false;
   }
 
-  Future<void> signIn(BuildContext context) async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      print("object");
+  // Future<void> signIn(BuildContext context) async {
+  //   try {
+  //     UserCredential userCredential =
+  //         await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //       email: emailController.text,
+  //       password: passwordController.text,
+  //     );
+  //     print("object");
 
-      // User sign-in successful
-      // You can navigate to another screen here
-      print('User signed in: ${userCredential.user?.email}');
+  //     // User sign-in successful
+  //     // You can navigate to another screen here
+  //     print('User signed in: ${userCredential.user?.email}');
 
-      // Perform additional actions or navigate to another screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const UserDashboard(),
-        ),
-      );
-    } on FirebaseAuthException catch (e) {
-      print("object1 : $e");
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-      // Handle other exceptions here
-    }
-  }
+  //     // Perform additional actions or navigate to another screen
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => const UserDashboard(),
+  //       ),
+  //     );
+  //   } on FirebaseAuthException catch (e) {
+  //     print("object1 : $e");
+  //     if (e.code == 'user-not-found') {
+  //       print('No user found for that email.');
+  //     } else if (e.code == 'wrong-password') {
+  //       print('Wrong password provided for that user.');
+  //     }
+  //     // Handle other exceptions here
+  //   }
+  // }
 
 //
   @override

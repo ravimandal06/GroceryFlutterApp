@@ -13,8 +13,8 @@ const addToCart = async (req, res) => {
       cartdata.product_offerPrice,
       cartdata.product_stock,
       cartdata.product_totalPrice,
-      cartdata.isSelectedToCart,
-      cartdata.user_city
+      cartdata.isSelectedToCart
+      // cartdata.user_city
     );
     if (cartList) {
       console.log(cartList);

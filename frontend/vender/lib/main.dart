@@ -1,14 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:vender/config.dart';
+import 'package:vender/screens/home.dart';
 import 'package:vender/screens/login.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/screen/homePage.dart';
 import 'package:vender/user/screen/signup.dart';
+import 'package:vender/user/screen/success.dart';
 
 import 'controller/shopProvider.dart';
+import 'payment/esewa_screen.dart';
 import 'screens/signup.dart';
 import 'user/screen/login.dart';
 
@@ -48,14 +52,20 @@ class MyApp extends StatelessWidget {
         home:
             // SellerInfoPage(),
             // UserDashboard(),
+
             // SignupScreen(),
             // ProductListPage(),
             // ProductListScreen(),
             // adminDashboard_,
             // SignupScreen(),
             // LoginUserScreen(),
-            LoginUserScreen(),
-        // const SignupUserScreen(),
+            // LoginUserScreen(),
+            // const SignupUserScreen(),
+            // ),
+            (GetStorage().read('isUserLogged') == false)
+                ? const HomePage()
+                : const LoginUserScreen(),
+        // SuccessPage(),
       ),
     );
   }

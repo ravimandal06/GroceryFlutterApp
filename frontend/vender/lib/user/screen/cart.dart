@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vender/user/model/cart_model.dart';
 import 'package:vender/user/screen/checkout.dart';
 import 'package:http/http.dart' as http;
@@ -20,43 +21,48 @@ class CartPage extends StatefulWidget {
   State<CartPage> createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartPage> {
-  List<dynamic> cartProduct = [];
-  double totalAmount = 0; // Initialize totalAmount to 0
-  Future<List<dynamic>> fetchCartProducts() async {
-    final response = await http.get(Uri.parse(
-        'http://192.168.137.1:3000/Cart/getUserCartList/64afa968935c3ce30d04076f'));
+List<dynamic> cartProduct = [];
+double totalAmount = 0; // Initialize totalAmount to 0
+Future<List<dynamic>> fetchCartProducts() async {
+  final response = await http.get(Uri.parse(
+      'http://localhost:3000/Cart/getUserCartList/64afa968935c3ce30d04076f'));
 
-    if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
+  if (response.statusCode == 200) {
+    final jsonResponse = json.decode(response.body);
 
-      if (jsonResponse != null && jsonResponse['cart_list'] is List<dynamic>) {
-        final cartProducts = jsonResponse['cart_list'] as List<dynamic>;
-        for (var product in cartProducts) {
-          print('Product Name: ${product['product_name']}');
-          print('Quantity: ${product['product_quantity']}');
-          print('Price: ${product['product_price']}');
-          print('Product ID: ${product['_id']}');
-          // Add more properties as needed
+    if (jsonResponse != null && jsonResponse['cart_list'] is List<dynamic>) {
+      final cartProducts = jsonResponse['cart_list'] as List<dynamic>;
+      for (var product in cartProducts) {
+        print('Product Name: ${product['product_name']}');
+        print('Quantity: ${product['product_quantity']}');
+        print('Price: ${product['product_price']}');
+        print('Product ID: ${product['_id']}');
+        // Add more properties as needed
 
-          print('-----------------------');
+        print('-----------------------');
+        Future<void> saveProductNames(List<String> productNames) async {
+          final prefs = await SharedPreferences.getInstance();
+          final productNamesJson = json.encode(productNames);
+          await prefs.setString('productNames', productNamesJson);
         }
-        return cartProducts;
-      } else {
-        throw Exception("Response is not a valid cart list");
       }
+      return cartProducts;
     } else {
-      throw Exception("GET request failed with status: ${response.statusCode}");
+      throw Exception("Response is not a valid cart list");
     }
+  } else {
+    throw Exception("GET request failed with status: ${response.statusCode}");
   }
+}
 
+class _CartPageState extends State<CartPage> {
   // delete-cart-item
   // List<CartItem> cartItems = []; // Your list of cart items
 
   Future<void> deleteCartItem(String productId) async {
     const userId = '64afa968935c3ce30d04076f'; // Replace with actual user ID
     final response = await http.delete(
-      Uri.parse('http://192.168.137.1:3000/Cart/deleteCart/$userId/$productId'),
+      Uri.parse('http://localhost:3000/Cart/deleteCart/$userId/$productId'),
     );
 
     if (response.statusCode == 200) {
@@ -71,7 +77,7 @@ class _CartPageState extends State<CartPage> {
 
   Future<void> checkOutItem(String city) async {
     final response = await http.delete(
-      Uri.parse('http://192.168.137.1:3000/admin/getProduct/$city'),
+      Uri.parse('http://localhost:3000/admin/getProduct/$city'),
     );
 
     if (response.statusCode == 200) {
@@ -96,7 +102,7 @@ class _CartPageState extends State<CartPage> {
   //     totalAmount = totalPrice;
   //   });
   // }
-
+  dynamic productPrice = 0;
   int noOfCartItems = 0;
   int couponAmount = 0;
   double subTotal = 0;
@@ -105,12 +111,19 @@ class _CartPageState extends State<CartPage> {
   double discountAmount = 0;
 
   void calculateTotalPrice() {
+    print(productPrice);
+    print('hello' + cartProduct.length.toString());
     for (var product in cartProduct) {
-      double productPrice = product['product_price'];
+      print("object ${product['product_price']}");
+      productPrice = product['product_price'];
+      print('after : $productPrice');
+      // double productOfferPrice = product['product_OfferPrice'];
       int productQuantity = product['product_quantity'];
       noOfCartItems = int.parse(cartProduct.length.toString());
-
-      subTotal += (productPrice * productQuantity);
+      if (productQuantity == 0) {
+        productQuantity = 1;
+      }
+      subTotal += ((productPrice) * productQuantity);
     }
 
     double discountAmount = subTotal * discountPercentage;
@@ -135,12 +148,19 @@ class _CartPageState extends State<CartPage> {
       setState(() {
         cartProduct = products;
         calculateTotalPrice();
+        print('hello');
         print("no of cart items : $noOfCartItems");
         print("subtotal price : $subTotal");
         print("delivery fee : $deliveryFee");
         print("discount percentage : $discountPercentage");
         print("coupon amount : $couponAmount");
         print("total price : $totalAmount");
+
+        setState(() async {
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString('totalAmount', totalAmount.toString());
+          print('stored price-total ---> ${prefs.getString('totalAmount')}');
+        });
       });
     });
   }
@@ -243,7 +263,7 @@ class _CartPageState extends State<CartPage> {
                                         ),
                                       ),
                                     ),
-                                    width: 320,
+                                    width: double.infinity,
                                     height: 105,
                                     child: Row(
                                       crossAxisAlignment:
@@ -258,7 +278,7 @@ class _CartPageState extends State<CartPage> {
                                           ),
                                         ),
                                         const SizedBox(
-                                          width: 30,
+                                          width: 15,
                                         ),
                                         Column(
                                           crossAxisAlignment:
@@ -285,7 +305,7 @@ class _CartPageState extends State<CartPage> {
                                               children: [
                                                 Text(
                                                   // '\$ ${value.cartItems[index].productPrice}',
-                                                  '\$${product['product_price']}',
+                                                  '\$${(product['product_price'])}',
                                                   style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w600,

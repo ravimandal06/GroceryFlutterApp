@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vender/user/controller/userDetails.dart';
 import 'package:vender/user/controller/userManager.dart';
 import 'package:vender/user/screen/login.dart';
@@ -48,7 +49,7 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
       var body = jsonEncode(regBody);
       print(body);
       var response = await http.post(
-          Uri.parse("http://192.168.137.1:3000/User/registration"),
+          Uri.parse("http://localhost:3000/User/registration"),
           headers: {"Content-Type": "application/json"},
           body: body);
       print("hellloo");
@@ -61,6 +62,16 @@ class _SignupUserScreenState extends State<SignupUserScreen> {
       if (jsonResponse['status']) {
         print("success");
         UserManager().setUserDetails(UserDetails(cityController.text));
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('email', emailController.text);
+        prefs.setString('name', nameController.text);
+        prefs.setString('phoneNumber', phoneNumberController.text);
+        prefs.setString('landmark', landmarkController.text);
+        prefs.setString('city', cityController.text);
+        prefs.setString('state', stateController.text);
+        prefs.setString('pincode', pincodeController.text);
+        //
+
         Navigator.push(
           context,
           MaterialPageRoute(

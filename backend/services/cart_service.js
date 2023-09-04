@@ -10,8 +10,8 @@ class CartService {
     product_offerPrice,
     product_stock,
     product_totalPrice,
-    isSelectedToCart,
-    user_city
+    isSelectedToCart
+    // user_city
   ) {
     // i need to add the push the data to cart if cart is already exsist for user if not create one
     try {
@@ -28,7 +28,7 @@ class CartService {
           product_stock,
           product_totalPrice,
           isSelectedToCart,
-          user_city,
+          // user_city,
         };
         cartList.cart_list.push(product);
         await cartList.save();
@@ -47,7 +47,7 @@ class CartService {
               product_stock,
               product_totalPrice,
               isSelectedToCart,
-              userCity,
+              // userCity,
             },
           ],
         });

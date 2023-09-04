@@ -39,9 +39,9 @@ const cartScheme = new Schema(
         isSelectedToCart: {
           type: Boolean,
         },
-        user_city: {
-          type: String,
-        },
+        // user_city: {
+        //   type: String,
+        // },
       },
     ],
   },

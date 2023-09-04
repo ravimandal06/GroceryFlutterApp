@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:vender/constant.dart';
 import 'package:vender/user/model/globalProducts.dart';
 import 'package:vender/user/screen/cart.dart';
@@ -19,15 +21,30 @@ class _UserDashboardState extends State<UserDashboard> {
 //
   late Future<List<GetProduct>> _products;
 
+  String userName = '';
+  String userCity = '';
+
+  Future<void> loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('name') ?? '';
+      userCity = prefs.getString('city') ?? '';
+      print("userName : $userName");
+      print("userCity : $userCity");
+      _products = _getProducts(userCity);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    _products = _getProducts('tirupati');
+    loadUserName();
+    // Navigator.restorablePushReplacementNamed(context, '/home');
   }
 
   Future<List<GetProduct>> _getProducts(String city) async {
     final response = await http
-        .get(Uri.parse('http://192.168.137.1:3000/admin/getProduct/$city'));
+        .get(Uri.parse('http://localhost:3000/admin/getProduct/$city'));
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       print("response status : ${response.statusCode}");
@@ -37,54 +54,6 @@ class _UserDashboardState extends State<UserDashboard> {
       throw Exception('Failed to get products');
     }
   }
-
-//
-  // final List<GetProductRequest> productList_ = [
-  //   GetProductRequest(
-  //     userId: "64afa968935c3ce30d04076f",
-  //     productType: 'Drinks',
-  //     productName: 'Wine',
-  //     productPrice: 199.99,
-  //     productStock: 10,
-  //     productImage: 'assets/wine.jpg',
-  //     productOfferPrice: 188.22,
-  //     productQuantity: 1,
-  //     isSelectedToCart: false,
-  //   ),
-  //   GetProductRequest(
-  //     userId: "64afa968935c3ce30d04076f",
-  //     productType: 'Fruits',
-  //     productName: 'Apple',
-  //     productPrice: 88.99,
-  //     productStock: 20,
-  //     productImage: 'assets/apple.jpg',
-  //     productOfferPrice: 76.22,
-  //     productQuantity: 1,
-  //     isSelectedToCart: false,
-  //   ),
-  //   GetProductRequest(
-  //     userId: "64afa968935c3ce30d04076f",
-  //     productType: 'Drinks',
-  //     productName: 'Vodka',
-  //     productPrice: 299.99,
-  //     productStock: 10,
-  //     productImage: 'assets/wine.jpg',
-  //     productOfferPrice: 148.22,
-  //     productQuantity: 1,
-  //     isSelectedToCart: false,
-  //   ),
-  //   GetProductRequest(
-  //     userId: "64afa968935c3ce30d04076f",
-  //     productType: 'Fruits',
-  //     productName: 'Orange',
-  //     productPrice: 188.99,
-  //     productStock: 20,
-  //     productImage: 'assets/apple.jpg',
-  //     productOfferPrice: 76.22,
-  //     productQuantity: 1,
-  //     isSelectedToCart: false,
-  //   ),
-  // ];
 
   int selectedCategory = 0;
   List<String> categoryTab_ = [
@@ -99,32 +68,13 @@ class _UserDashboardState extends State<UserDashboard> {
   ];
   //
 
-  // bool isProductAddedCart_ = false;
-  // bool isProductAddedToCart(GetProductRequest product) {
-  //   return selectedItems.contains(product);
-  // }
+  bool isFavorite = false;
 
-  // void toggleSelection(int index) {
-  //   setState(() {
-  //     productList_[index].isSelectedToCart =
-  //         productList_[index].isSelectedToCart;
-  //     print(
-  //         "is selected added to cart ? -> ${productList_[index].isSelectedToCart}");
-  //   });
-  // }
-
-  // void addToCart(GetProductRequest product) {
-  //   setState(() {
-  //     // Update the isSelectedToCart property
-  //     product.isSelectedToCart = true;
-  //     selectedItems.add(product);
-  //     print(selectedItems.length);
-  //   });
-  // }
-
-  //
-
-  //
+  void toggleFavorite() {
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -355,8 +305,8 @@ class _UserDashboardState extends State<UserDashboard> {
                                 });
                               },
                               child: Container(
-                                width: 166,
-                                height: 263,
+                                width: 170,
+                                height: 205,
                                 decoration: BoxDecoration(
                                     border: Border.all(
                                         color: Colors.white, width: 2),
@@ -371,156 +321,190 @@ class _UserDashboardState extends State<UserDashboard> {
                                             0, 3), // changes position of shadow
                                       ),
                                     ]),
-                                child: SizedBox(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(4.0),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        width: 158,
-                                        height: 159,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: Image.network(
-                                            snapshot.data![index].productImage,
-                                            fit: BoxFit.cover,
+                                child: Stack(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(4.0),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black12
+                                                      .withOpacity(0.1),
+                                                  spreadRadius: 0,
+                                                  blurRadius: 10,
+                                                  offset: const Offset(0,
+                                                      3), // changes position of shadow
+                                                ),
+                                              ]),
+                                          width: 158,
+                                          height: 159,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: Image.network(
+                                              snapshot
+                                                  .data![index].productImage,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Text(
-                                                snapshot
-                                                    .data![index].productType,
-                                                style: const TextStyle(
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Color(0xff0C1A30),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SizedBox(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                SizedBox(
+                                                  width: 135,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        snapshot.data![index]
+                                                            .productName
+                                                            .firstLetterUpperCase(),
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          decorationStyle:
+                                                              TextDecorationStyle
+                                                                  .double,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color:
+                                                              Color(0xff0C1A30),
+                                                        ),
+                                                      ),
+                                                      const Text(
+                                                        "1L",
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color:
+                                                              Color(0xff0C1A30),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    snapshot.data![index]
-                                                        .productName,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Color(0xff0C1A30),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    snapshot
-                                                        .data![index].shopName,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Color(0xff0C1A30),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                width: 130,
-                                                child: Row(
+                                                Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
+                                                    // Text(
+                                                    //   snapshot.data![index]
+                                                    //       .productName,
+                                                    //   style: const TextStyle(
+                                                    //     fontSize: 14,
+                                                    //     fontWeight:
+                                                    //         FontWeight.w400,
+                                                    //     color: Color(0xff0C1A30),
+                                                    //   ),
+                                                    // ),
                                                     Text(
-                                                      "\$${snapshot.data![index].productPrice}",
+                                                      snapshot.data![index]
+                                                          .shopName,
                                                       style: const TextStyle(
-                                                        fontSize: 16,
+                                                        fontSize: 14,
                                                         fontWeight:
-                                                            FontWeight.w600,
+                                                            FontWeight.w400,
                                                         color:
                                                             Color(0xff0C1A30),
                                                       ),
                                                     ),
-                                                    // SizedBox(width: 10,),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        setState(() {
-                                                          // toggleSelection(index);
-                                                          // print(
-                                                          //     'tapped $index product');
-
-                                                          // Provider.of<CartModel>(
-                                                          //         context,
-                                                          //         listen: false)
-                                                          //     .addToCart(index);
-                                                          // if (!isProductAddedToCart(
-                                                          //     productList_[
-                                                          //         index])) {
-                                                          //   // postData();
-                                                          //   addToCart(productList_[
-                                                          //       index]);
-                                                          //   Get.snackbar(
-                                                          //     "Product Added",
-                                                          //     "Product added to cart",
-                                                          //     snackPosition:
-                                                          //         SnackPosition
-                                                          //             .BOTTOM,
-                                                          //     backgroundColor:
-                                                          //         Colors.green[300],
-                                                          //     colorText:
-                                                          //         Colors.white,
-                                                          //     duration:
-                                                          //         const Duration(
-                                                          //             seconds: 2),
-                                                          //     icon: const Icon(
-                                                          //       Icons
-                                                          //           .check_circle_outline_rounded,
-                                                          //       color: Colors.white,
-                                                          //     ),
-                                                          //   );
-                                                          // }
-                                                        });
-                                                      },
-                                                      child: Container(
-                                                        width: 7,
-                                                        height: 7,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(30),
-                                                          color: const Color(
-                                                              0xff0C1A30),
-                                                        ),
-                                                        // child: const Icon(
-                                                        //   Icons.add,
-                                                        //   color: Colors.white,
-                                                        // ),
-                                                      ),
-                                                    ),
                                                   ],
                                                 ),
-                                              ),
-                                            ],
+                                                Container(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 30,
+                                                        width: 115,
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            // Text(
+                                                            //   "\$${snapshot.data![index].productPrice}",
+                                                            //   style: TextStyle(
+                                                            //     decoration:
+                                                            //         TextDecoration
+                                                            //             .lineThrough,
+                                                            //     fontSize: 16,
+                                                            //     fontWeight:
+                                                            //         FontWeight
+                                                            //             .w500,
+                                                            //     color: Color
+                                                            //         .fromARGB(
+                                                            //             179,
+                                                            //             12,
+                                                            //             26,
+                                                            //             48),
+                                                            //   ),
+                                                            // ),
+                                                            Text(
+                                                              "\$${snapshot.data![index].productOfferPrice}",
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Color(
+                                                                    0xff0C1A30),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      // SizedBox(width: 10,),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
+                                        )
+                                      ],
+                                    ),
+
+                                    //
+                                    // icons
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 135),
+                                      child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            toggleFavorite();
+                                          });
+                                        },
+                                        child: Icon(
+                                          isFavorite
+                                              ? Icons.favorite
+                                              : Icons.favorite_border_outlined,
+                                          color:
+                                              Color.fromARGB(184, 254, 109, 76),
+                                          size: 30,
                                         ),
-                                      )
-                                    ],
-                                  ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),

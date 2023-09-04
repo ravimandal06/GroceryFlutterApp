@@ -56,7 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
       var body = jsonEncode(regBody);
       print(body);
       var response = await http.post(
-          Uri.parse("http://190.190.2.226:3000/admin/register"),
+          Uri.parse("http://10.10.10.205:3000/admin/register"),
           headers: {"Content-Type": "application/json"},
           body: body);
       print("hellloo");

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vender/payment/esewa_function.dart';
+import 'package:vender/payment/esewa_screen.dart';
+import 'package:vender/user/screen/loading.dart';
 import 'package:vender/user/widget/locationEdit.dart';
 
 class CheckOut extends StatefulWidget {
@@ -13,15 +17,28 @@ class CheckOut extends StatefulWidget {
 class _CheckOutState extends State<CheckOut> {
 //
 
+  String selectedPaymentMethod = 'eSewa';
+
+  void handlePaymentMethodChange(String? value) {
+    setState(() {
+      selectedPaymentMethod = value!;
+    });
+  }
+
+  String landmark = '';
+
+  Future<void> loadUserLocation() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      landmark = prefs.getString('landmark') ?? 'empty';
+      print("userName : $landmark");
+    });
+  }
+
   @override
   void initState() {
-    // border = OutlineInputBorder(
-    //   borderSide: BorderSide(
-    //     color: Colors.grey.withOpacity(0.7),
-    //     width: 2.0,
-    //   ),
-    // );
     super.initState();
+    loadUserLocation();
   }
 
   //
@@ -160,8 +177,8 @@ class _CheckOutState extends State<CheckOut> {
                   height: 10,
                 ),
                 Container(
-                  // height: 200,
-                  // width: double.infinity,
+                  height: 300,
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
                   ),
@@ -201,10 +218,34 @@ class _CheckOutState extends State<CheckOut> {
                   //     // ),
                   //   ],
                   // ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      PaymentOption(
+                        label: 'eSewa',
+                        value: 'eSewa',
+                        groupValue: selectedPaymentMethod,
+                        onChanged: handlePaymentMethodChange,
+                      ),
+                      PaymentOption(
+                        label: 'Khalti',
+                        value: 'Khalti',
+                        groupValue: selectedPaymentMethod,
+                        onChanged: handlePaymentMethodChange,
+                      ),
+                      PaymentOption(
+                        label: 'Credit Card',
+                        value: 'Credit Card',
+                        groupValue: selectedPaymentMethod,
+                        onChanged: handlePaymentMethodChange,
+                      ),
+                      // Add more payment options as needed
+                    ],
+                  ),
                 ),
 
                 const SizedBox(
-                  height: 26,
+                  height: 5,
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,7 +302,7 @@ class _CheckOutState extends State<CheckOut> {
                               color: Colors.black),
                         ),
                         Text(
-                          "${GetStorage().read('_address') ?? "Kolkata, West Bengal, India"}",
+                          landmark,
                           style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -292,13 +333,16 @@ class _CheckOutState extends State<CheckOut> {
                 ),
 
                 const SizedBox(
-                  height: 200,
+                  height: 150,
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 360,
                   child: ElevatedButton(
                     onPressed: () {
                       // Handle checkout button press
+                      setState(() {
+                        Get.to(() => LoadingPage());
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
@@ -310,11 +354,11 @@ class _CheckOutState extends State<CheckOut> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text(
-                      'Continue to Checkout',
-                      style: TextStyle(
+                    child: Text(
+                      'Continue to Checkout ${'with $selectedPaymentMethod' ?? ''}',
+                      style: const TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
                     ),
@@ -323,6 +367,47 @@ class _CheckOutState extends State<CheckOut> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+//
+class PaymentOption extends StatelessWidget {
+  final String label;
+  final String value;
+  final String groupValue;
+  final void Function(String?)? onChanged;
+
+  const PaymentOption({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        onChanged!(value);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: <Widget>[
+            Radio<String>(
+              value: value,
+              groupValue: groupValue,
+              onChanged: onChanged,
+            ),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 18),
+            ),
+          ],
         ),
       ),
     );

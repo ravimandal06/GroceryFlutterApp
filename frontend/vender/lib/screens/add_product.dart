@@ -202,7 +202,7 @@ class _AddProductState extends State<AddProduct> {
         );
 
         var response = await http.post(
-          Uri.parse("http://190.190.2.226:3000/admin/addProduct/"),
+          Uri.parse("http://10.10.10.205:3000/admin/addProduct/"),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(regBody.toJson()),
         );
