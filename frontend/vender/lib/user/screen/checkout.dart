@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vender/payment/esewa_function.dart';
-import 'package:vender/payment/esewa_screen.dart';
 import 'package:vender/user/screen/loading.dart';
 import 'package:vender/user/widget/locationEdit.dart';
 
@@ -341,7 +338,7 @@ class _CheckOutState extends State<CheckOut> {
                     onPressed: () {
                       // Handle checkout button press
                       setState(() {
-                        Get.to(() => LoadingPage());
+                        Get.to(() => const LoadingPage());
                       });
                     },
                     style: ElevatedButton.styleFrom(

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../controller/order_controller.dart';
 import 'package:http/http.dart' as http;
 
-import '../model/products.dart';
 import '../services/addProductResponse.dart';
 
 class HomePage extends StatefulWidget {

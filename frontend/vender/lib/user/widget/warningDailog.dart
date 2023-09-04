@@ -5,8 +5,8 @@ class WarningDialog extends StatelessWidget {
   final String message;
   final VoidCallback onConfirm;
 
-  WarningDialog(
-      {required this.title, required this.message, required this.onConfirm});
+  const WarningDialog(
+      {super.key, required this.title, required this.message, required this.onConfirm});
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +18,14 @@ class WarningDialog extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context); // Close the dialog
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
             onConfirm();
             Navigator.pop(context); // Close the dialog after confirming
           },
-          child: Text('Confirm'),
+          child: const Text('Confirm'),
         ),
       ],
     );

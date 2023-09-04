@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../controller/monthlyDetailExpense.dart';
@@ -51,10 +50,10 @@ class _PerformancePageState extends State<PerformancePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
+              const SizedBox(
                 width: 320,
                 height: 40,
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(Icons.arrow_back_ios_new_rounded),
@@ -291,7 +290,7 @@ class _PerformancePageState extends State<PerformancePage> {
                       );
                     }),
               ),
-              SizedBox(height: 16.0,),
+              const SizedBox(height: 16.0,),
 
               if(selectedCategory == 0)...{
                SizedBox(

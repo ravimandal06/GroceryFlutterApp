@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/utils.dart';
 import 'package:vender/user/screen/productDetailPage.dart';
 
 class ReviewProductPage extends StatefulWidget {

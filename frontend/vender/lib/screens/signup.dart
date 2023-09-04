@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:get_storage/get_storage.dart';
-import 'package:provider/provider.dart';
 import 'package:vender/config.dart';
 import 'package:vender/screens/login.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../controller/shopManager.dart';
-import '../controller/shopProvider.dart';
 import '../model/shopDetails.dart';
 
 class SignupScreen extends StatefulWidget {

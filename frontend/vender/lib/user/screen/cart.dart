@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'package:vender/user/screen/emptyCart.dart';
 import 'package:vender/user/widget/warningDailog.dart';
 
-import '../../constant.dart';
 
 // import '../model/cartModel.dart';
 
@@ -112,7 +111,7 @@ class _CartPageState extends State<CartPage> {
 
   void calculateTotalPrice() {
     print(productPrice);
-    print('hello' + cartProduct.length.toString());
+    print('hello${cartProduct.length}');
     for (var product in cartProduct) {
       print("object ${product['product_price']}");
       productPrice = product['product_price'];

@@ -8,7 +8,6 @@ import 'package:esewa_flutter_sdk/esewa_payment_success_result.dart';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vender/user/screen/success.dart';
 
 import '../user/screen/cart.dart';
 import 'esewa_const.dart';

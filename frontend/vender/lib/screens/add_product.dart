@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 import '../controller/shopManager.dart';
 import '../model/addProductRequest.dart';
@@ -14,7 +13,6 @@ import '../services/addProductResponse.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-import '../user/model/cart_model.dart';
 
 class AddProduct extends StatefulWidget {
   const AddProduct({Key? key, this.token})

@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:vender/constant.dart';
 import 'package:vender/user/model/globalProducts.dart';
 import 'package:vender/user/screen/cart.dart';
-import 'package:vender/user/model/products.dart';
 import 'package:http/http.dart' as http;
 import 'productDetailPage.dart';
 
@@ -499,7 +497,7 @@ class _UserDashboardState extends State<UserDashboard> {
                                               ? Icons.favorite
                                               : Icons.favorite_border_outlined,
                                           color:
-                                              Color.fromARGB(184, 254, 109, 76),
+                                              const Color.fromARGB(184, 254, 109, 76),
                                           size: 30,
                                         ),
                                       ),
