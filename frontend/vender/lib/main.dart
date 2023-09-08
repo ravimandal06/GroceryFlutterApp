@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:vender/screens/home.dart';
+import 'package:vender/user/homeNavigation.dart';
 import 'package:vender/user/model/cart_model.dart';
 
 import 'user/screen/login.dart';
@@ -54,9 +55,10 @@ class MyApp extends StatelessWidget {
             // LoginUserScreen(),
             // const SignupUserScreen(),
             // ),
-            (GetStorage().read('isUserLogged') == false)
-                ? const HomePage()
-                : const LoginUserScreen(),
+            // (GetStorage().read('isUserLogged') == false)
+            //     ? const HomePage()
+            //     : const LoginUserScreen(),
+            HomeNavigation(),
         // SuccessPage(),
       ),
     );

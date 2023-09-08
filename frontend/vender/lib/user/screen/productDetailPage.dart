@@ -50,7 +50,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   Future<List<GetProduct>> _getProducts(String city) async {
     final response = await http
-        .get(Uri.parse('http://localhost:3000/admin/getProduct/$city'));
+        .get(Uri.parse('http://192.168.10.15:3000/admin/getProduct/$city'));
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       print("response status : ${response.statusCode}");

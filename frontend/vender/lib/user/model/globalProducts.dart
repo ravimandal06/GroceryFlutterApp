@@ -10,6 +10,7 @@ GetProduct getProductFromJson(String str) =>
 String getProductToJson(GetProduct data) => json.encode(data.toJson());
 
 class GetProduct {
+  final String productId;
   final String productType;
   final String productName;
   final int productPrice;
@@ -24,7 +25,10 @@ class GetProduct {
   final String landmark;
   final String pincode;
 
+  bool isFavorite;
+
   GetProduct({
+    required this.productId,
     required this.productType,
     required this.productName,
     required this.productPrice,
@@ -37,9 +41,11 @@ class GetProduct {
     required this.state,
     required this.landmark,
     required this.pincode,
+    this.isFavorite = false,
   });
 
   factory GetProduct.fromJson(Map<String, dynamic> json) => GetProduct(
+        productId: json["productId"] ?? "",
         productType:
             json["productType"] ?? "", // Default to an empty string if null
         productName: json["productName"] ?? "",
@@ -56,6 +62,7 @@ class GetProduct {
       );
 
   Map<String, dynamic> toJson() => {
+        "productId": productId,
         "productType": productType,
         "productName": productName,
         "productPrice": productPrice,
