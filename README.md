@@ -68,7 +68,7 @@ Contributions are welcome! If you would like to contribute to this project, plea
 ---
 
 ## Contact:
-For any questions or inquiries, feel free to contact us at [your@email.com].
+For any questions or inquiries, feel free to contact us at [ravimandal882@gmail.com].
 
 ---
 
